@@ -138,6 +138,7 @@
 
     function setMenu(open) {
       nav.classList.toggle("is-open", open);
+      header.classList.toggle("menu-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", msg(open ? "menuClose" : "menuOpen"));
     }
@@ -161,7 +162,7 @@
      Reveal on scroll
      ------------------------------------------------------------------ */
   function initReveal() {
-    var targets = $$(".reveal, .step-progress");
+    var targets = $$(".reveal");
     if (!("IntersectionObserver" in window)) {
       targets.forEach(function (el) { el.classList.add("is-visible"); });
       return;
