@@ -307,6 +307,137 @@
     });
   }
 
+  /* ------------------------------------------------------------------
+     Youthful layer: rotating word, stickers, spotlight, magnetic buttons,
+     service preview, tilt. All pointer effects are desktop-only and skip
+     when the visitor prefers reduced motion.
+     ------------------------------------------------------------------ */
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function initRotator() {
+    if (reduceMotion) return;
+    var i = 0;
+    setInterval(function () {
+      // Re-query each tick: switching language rebuilds the hero copy.
+      var box = $(".rotator");
+      var word = box && $(".rotator-word", box);
+      if (!word || document.hidden) return;
+      var words = box.dataset.words.split("|");
+      i = (words.indexOf(word.textContent) + 1) % words.length;
+      word.classList.remove("is-in");
+      word.classList.add("is-out");
+      setTimeout(function () {
+        word.textContent = words[i];
+        word.classList.remove("is-out");
+        word.classList.add("is-in");
+      }, 260);
+    }, 2400);
+  }
+
+  function initStickers() {
+    $$(".sticker").forEach(function (el) {
+      var startX, startY, baseX = 0, baseY = 0;
+      el.addEventListener("pointerdown", function (e) {
+        el.setPointerCapture(e.pointerId);
+        el.classList.add("is-dragging");
+        startX = e.clientX; startY = e.clientY;
+      });
+      el.addEventListener("pointermove", function (e) {
+        if (!el.classList.contains("is-dragging")) return;
+        el.style.setProperty("--dx", baseX + e.clientX - startX + "px");
+        el.style.setProperty("--dy", baseY + e.clientY - startY + "px");
+      });
+      function drop(e) {
+        if (!el.classList.contains("is-dragging")) return;
+        baseX += e.clientX - startX; baseY += e.clientY - startY;
+        el.classList.remove("is-dragging");
+      }
+      el.addEventListener("pointerup", drop);
+      el.addEventListener("pointercancel", drop);
+    });
+  }
+
+  function initSpotlight() {
+    var hero = $(".hero");
+    if (!hero || !finePointer || reduceMotion) return;
+    hero.addEventListener("pointermove", function (e) {
+      var r = hero.getBoundingClientRect();
+      hero.style.setProperty("--mx", e.clientX - r.left + "px");
+      hero.style.setProperty("--my", e.clientY - r.top + "px");
+    });
+  }
+
+  function initMagnetic() {
+    if (!finePointer || reduceMotion) return;
+    $$(".magnetic").forEach(function (btn) {
+      btn.addEventListener("pointermove", function (e) {
+        var r = btn.getBoundingClientRect();
+        btn.style.setProperty("--tx", (e.clientX - r.left - r.width / 2) * 0.25 + "px");
+        btn.style.setProperty("--ty", (e.clientY - r.top - r.height / 2) * 0.35 + "px");
+      });
+      btn.addEventListener("pointerleave", function () {
+        btn.style.setProperty("--tx", "0px");
+        btn.style.setProperty("--ty", "0px");
+      });
+    });
+  }
+
+  function initServicePreview() {
+    if (!finePointer || reduceMotion) return;
+    var looks = [
+      "linear-gradient(150deg, #1FC8F6, #2D63FC)",
+      "linear-gradient(150deg, #183889, #0A1B3D)",
+      "linear-gradient(150deg, #2D63FC, #122B67)"
+    ];
+    var card = document.createElement("div");
+    card.className = "svc-preview";
+    card.setAttribute("aria-hidden", "true");
+    card.innerHTML = '<span class="pv-pixels"><i></i><i></i><i></i></span><span class="pv-num"></span><span class="pv-title"></span>';
+    document.body.appendChild(card);
+
+    var x = 0, y = 0, cx = 0, cy = 0, raf = null;
+    function follow() {
+      cx += (x - cx) * 0.18; cy += (y - cy) * 0.18;
+      card.style.transform = "translate(" + (cx + 24) + "px," + (cy - 90) + "px)";
+      card.style.setProperty("--pv-rot", Math.max(-8, Math.min(8, (x - cx) * 0.15)) + "deg");
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.5 ? requestAnimationFrame(follow) : null;
+    }
+    $$(".svc").forEach(function (row, i) {
+      row.addEventListener("pointerenter", function (e) {
+        $(".pv-num", card).textContent = $(".svc-num", row).textContent;
+        $(".pv-title", card).textContent = $(".svc-title", row).textContent;
+        card.style.setProperty("--pv-bg", looks[i % looks.length]);
+        if (!card.classList.contains("is-on")) { cx = x = e.clientX; cy = y = e.clientY; }
+        card.classList.add("is-on");
+      });
+      row.addEventListener("pointermove", function (e) {
+        x = e.clientX; y = e.clientY;
+        if (!raf) raf = requestAnimationFrame(follow);
+      });
+      row.addEventListener("pointerleave", function () { card.classList.remove("is-on"); });
+    });
+  }
+
+  function initTilt() {
+    if (!finePointer || reduceMotion) return;
+    $$(".tile").forEach(function (tile) {
+      tile.addEventListener("pointermove", function (e) {
+        var r = tile.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        tile.classList.add("is-tilting");
+        tile.style.setProperty("--ry", px * 6 + "deg");
+        tile.style.setProperty("--rx", -py * 6 + "deg");
+      });
+      tile.addEventListener("pointerleave", function () {
+        tile.classList.remove("is-tilting");
+        tile.style.setProperty("--rx", "0deg");
+        tile.style.setProperty("--ry", "0deg");
+      });
+    });
+  }
+
   /* ------------------------------------------------------------------ */
   function init() {
     var year = $("[data-year]");
@@ -317,6 +448,12 @@
     initHeader();
     initReveal();
     initServiceLinks();
+    initRotator();
+    initStickers();
+    initSpotlight();
+    initMagnetic();
+    initServicePreview();
+    initTilt();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

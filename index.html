@@ -92,15 +92,24 @@
 
   <!-- ============ Hero ============ -->
   <section class="hero" id="top">
+    <div class="hero-spot" aria-hidden="true"></div>
     <svg class="hero-mark" aria-hidden="true"><use href="#dp-symbol"/></svg>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="stickers" aria-hidden="true">
+      <span class="sticker sticker--white" style="--r:-8deg;top:24%;inset-inline-end:31%">UI/UX</span>
+      <span class="sticker sticker--cyan" style="--r:7deg;top:33%;inset-inline-end:7%">iOS · Android</span>
+      <span class="sticker sticker--navy" style="--r:-5deg;top:61%;inset-inline-end:25%" data-i18n="hero.s1">دعم بعد الإطلاق</span>
+      <span class="sticker sticker--grad" style="--r:10deg;top:72%;inset-inline-end:5%" data-i18n="hero.s2">متاجر سلة</span>
+    </div>
 
     <div class="container hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow reveal"><span class="eyebrow-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">حلول رقمية للشركات</span></p>
+        <p class="eyebrow reveal"><span class="eyebrow-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">نستقبل مشاريع جديدة</span></p>
         <h1 class="hero-title reveal" data-i18n-html="hero.title">مفتاحك إلى<br><span class="text-grad">العالم الرقمي</span></h1>
-        <p class="hero-lead reveal" data-i18n="hero.lead">نصمّم ونبني الأنظمة والتطبيقات والمواقع التي يحتاجها عملك — ونبقى معك بعد الإطلاق.</p>
+        <p class="hero-lead reveal" data-i18n-html="hero.lead">نصمّم ونبني <span class="rotator" data-words="الأنظمة|التطبيقات|المواقع|متاجر سلة|الثيمات"><span class="rotator-word">الأنظمة</span></span> التي يحتاجها عملك — ونبقى معك بعد الإطلاق.</p>
         <div class="hero-actions reveal">
-          <a href="#contact" class="btn btn-light btn-lg">
+          <a href="#contact" class="btn btn-light btn-lg magnetic">
             <span data-i18n="hero.cta">ابدأ مشروعك</span>
             <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
           </a>
@@ -118,6 +127,12 @@
       </ul>
     </div>
   </section>
+
+  <!-- ============ Crossing tapes ============ -->
+  <div class="tapes" aria-hidden="true">
+    <div class="tape tape--a"><div class="tape-track"><div class="tape-group"><span data-i18n="tape.1">أنظمة مخصّصة</span><span data-i18n="tape.2">تطبيقات جوال</span><span data-i18n="tape.3">مواقع تعريفية</span><span data-i18n="tape.4">متاجر إلكترونية</span><span data-i18n="tape.5">حلول سلة</span><span data-i18n="tape.6">ثيمات مخصّصة</span></div><div class="tape-group"><span data-i18n="tape.1">أنظمة مخصّصة</span><span data-i18n="tape.2">تطبيقات جوال</span><span data-i18n="tape.3">مواقع تعريفية</span><span data-i18n="tape.4">متاجر إلكترونية</span><span data-i18n="tape.5">حلول سلة</span><span data-i18n="tape.6">ثيمات مخصّصة</span></div><div class="tape-group"><span data-i18n="tape.1">أنظمة مخصّصة</span><span data-i18n="tape.2">تطبيقات جوال</span><span data-i18n="tape.3">مواقع تعريفية</span><span data-i18n="tape.4">متاجر إلكترونية</span><span data-i18n="tape.5">حلول سلة</span><span data-i18n="tape.6">ثيمات مخصّصة</span></div><div class="tape-group"><span data-i18n="tape.1">أنظمة مخصّصة</span><span data-i18n="tape.2">تطبيقات جوال</span><span data-i18n="tape.3">مواقع تعريفية</span><span data-i18n="tape.4">متاجر إلكترونية</span><span data-i18n="tape.5">حلول سلة</span><span data-i18n="tape.6">ثيمات مخصّصة</span></div></div></div>
+    <div class="tape tape--b"><div class="tape-track"><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span>Automation</span><span>Salla Themes</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span>Automation</span><span>Salla Themes</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span>Automation</span><span>Salla Themes</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span>Automation</span><span>Salla Themes</span></div></div></div>
+  </div>
 
   <!-- ============ About / intro ============ -->
   <section class="section about" id="about">
@@ -245,6 +260,7 @@
 
   <!-- ============ What we build (product shots) ============ -->
   <section class="section showcase" id="work">
+    <div class="grain" aria-hidden="true"></div>
     <div class="container">
       <div class="section-top">
         <div>
@@ -397,39 +413,33 @@
         <p class="section-lead reveal" data-i18n="why.lead">نبقى مع عملائنا بعد الإطلاق ونكبر معهم. وهذه القيم الأربع تحكم طريقة عملنا.</p>
       </div>
 
-      <div class="values">
-        <div class="value reveal">
+      <div class="vbento">
+        <article class="vtile vtile--trust reveal">
+          <span class="vt-num">01</span>
           <h3 data-i18n="v1.title">الثقة</h3>
           <p data-i18n="v1.desc">نحفظ بيانات عملائنا وأنظمتهم كأنها لنا، ونفي بما نعد به.</p>
-          <ul>
-            <li data-i18n="v1.i1">أمان البيانات أولوية في كل قرار</li>
-            <li data-i18n="v1.i2">وعود واقعية ومواعيد نلتزم بها</li>
-          </ul>
-        </div>
-        <div class="value reveal">
+          <ul class="vt-pills"><li data-i18n="v1.i1">أمان البيانات أولوية في كل قرار</li><li data-i18n="v1.i2">وعود واقعية ومواعيد نلتزم بها</li></ul>
+          <svg class="vt-mark" aria-hidden="true"><use href="#dp-symbol"/></svg>
+        </article>
+        <article class="vtile vtile--clarity reveal">
+          <span class="vt-num">02</span>
           <h3 data-i18n="v2.title">الوضوح</h3>
           <p data-i18n="v2.desc">لغة بسيطة، مراحل معروفة، وتكلفة واضحة من البداية.</p>
-          <ul>
-            <li data-i18n="v2.i1">نطاق عمل مكتوب قبل البدء</li>
-            <li data-i18n="v2.i2">تقارير تقدّم دورية وشفافة</li>
-          </ul>
-        </div>
-        <div class="value reveal">
+          <ul class="vt-pills"><li data-i18n="v2.i1">نطاق عمل مكتوب قبل البدء</li><li data-i18n="v2.i2">تقارير تقدّم دورية وشفافة</li></ul>
+        </article>
+        <article class="vtile vtile--craft reveal">
+          <span class="vt-num">03</span>
           <h3 data-i18n="v3.title">الإتقان</h3>
           <p data-i18n="v3.desc">كود نظيف وتجربة استخدام مدروسة في أصغر التفاصيل.</p>
-          <ul>
-            <li data-i18n="v3.i1">مراجعة واختبار قبل كل إطلاق</li>
-            <li data-i18n="v3.i2">توثيق يسهّل التطوير لاحقاً</li>
-          </ul>
-        </div>
-        <div class="value reveal">
+          <ul class="vt-pills"><li data-i18n="v3.i1">مراجعة واختبار قبل كل إطلاق</li><li data-i18n="v3.i2">توثيق يسهّل التطوير لاحقاً</li></ul>
+        </article>
+        <article class="vtile vtile--partner reveal">
+          <span class="vt-num">04</span>
           <h3 data-i18n="v4.title">الشراكة</h3>
           <p data-i18n="v4.desc">نفهم عمل العميل قبل أن نبرمج، ونقيس النتائج معه ونحسّن.</p>
-          <ul>
-            <li data-i18n="v4.i1">دعم وتطوير مستمر بعد التسليم</li>
-            <li data-i18n="v4.i2">تواصل مباشر مع فريق العمل</li>
-          </ul>
-        </div>
+          <ul class="vt-pills"><li data-i18n="v4.i1">دعم وتطوير مستمر بعد التسليم</li><li data-i18n="v4.i2">تواصل مباشر مع فريق العمل</li></ul>
+          <span class="vt-pixels" aria-hidden="true"><i></i><i></i><i></i></span>
+        </article>
       </div>
     </div>
   </section>
@@ -439,7 +449,7 @@
     <div class="container contact-grid">
       <div class="contact-info">
         <p class="label reveal" data-i18n="contact.label">تواصل معنا</p>
-        <h2 class="h2 reveal" data-i18n="contact.title">هل عملك جاهز للرقمنة؟</h2>
+        <h2 class="h2 reveal" data-i18n-html="contact.title">عندك فكرة؟ <span class="text-grad">لنحوّلها إلى منتج.</span></h2>
         <p class="section-lead reveal" data-i18n="contact.lead">أخبرنا عن عملك وما تحتاجه، ونعود إليك بخطوات واضحة.</p>
 
         <dl class="contact-list reveal">
@@ -533,10 +543,11 @@
 
 <!-- ============ Footer ============ -->
 <footer class="site-footer">
+  <div class="grain" aria-hidden="true"></div>
   <div class="container">
     <div class="footer-top">
       <p class="footer-tagline"><span data-i18n="footer.tagline">مفتاحك إلى العالم الرقمي</span><span class="alt-en" lang="en">Your Key to Digital</span></p>
-      <a href="#contact" class="btn btn-light btn-lg">
+      <a href="#contact" class="btn btn-light btn-lg magnetic">
         <span data-i18n="nav.cta">ابدأ مشروعك</span>
         <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
       </a>
@@ -590,6 +601,7 @@
       <span data-i18n="footer.rights">جميع الحقوق محفوظة.</span>
     </div>
   </div>
+  <div class="footer-giant" aria-hidden="true"><span class="fg-digital">DIGITAL</span> <span class="fg-pass">PASS</span></div>
 </footer>
 
 <a class="wa-float" data-contact="whatsapp-float" href="#" target="_blank" rel="noopener" aria-label="تواصل عبر واتساب" data-i18n-aria="contact.whatsappAria" hidden>
