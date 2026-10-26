@@ -8,11 +8,11 @@ window.DP_I18N = {
   meta: {
     ar: {
       title: "Digital Pass — مفتاحك إلى العالم الرقمي",
-      description: "Digital Pass شركة حلول رقمية تبني للشركات أنظمة مخصّصة وتطبيقات جوال وويب، وتديرها معها بعد الإطلاق."
+      description: "Digital Pass شركة حلول رقمية تبني للشركات أنظمة مخصّصة وتطبيقات ومواقع ومتاجر إلكترونية وحلولاً لمتاجر سلة، وتديرها معها بعد الإطلاق."
     },
     en: {
       title: "Digital Pass — Your Key to Digital",
-      description: "Digital Pass is a digital solutions company that builds custom systems and mobile & web apps for businesses — and runs them after launch."
+      description: "Digital Pass is a digital solutions company that builds custom systems, apps, websites, online stores and Salla solutions for businesses — and runs them after launch."
     }
   },
 
@@ -71,7 +71,9 @@ window.DP_I18N = {
     "hero.chipProgress": "In progress",
 
     "services.title": "Our services",
-    "services.lead": "Four services that cover your digital journey — from idea to operation.",
+    "services.lead": "Services that cover your whole digital journey — from idea to operation.",
+    "services.g1": "Systems & apps",
+    "services.g2": "Websites & e-commerce",
     "services.request": "Request this service",
 
     "s1.title": "Custom systems",
@@ -95,6 +97,26 @@ window.DP_I18N = {
     "s4.t2": "API integration",
     "s4.t3": "Data analytics",
     "s4.t4": "Consulting",
+
+    "s5.title": "Web development",
+    "s5.desc": "We build websites of every kind: corporate sites that present your company and online stores that sell your products — designed around your brand and fast on every device.",
+    "s5.t1": "Corporate websites",
+    "s5.t2": "Online stores",
+    "s5.t3": "Mobile-friendly",
+    "s5.t4": "Arabic & English",
+
+    "s6.title": "Salla store solutions",
+    "s6.desc": "Technical solutions inside your Salla store: apps and add-ons that solve a specific need, and integrations that connect your store to your other systems.",
+    "s6.t1": "Salla apps",
+    "s6.t2": "Integrations",
+    "s6.t3": "Automation",
+    "s6.t4": "Store customization",
+
+    "s7.title": "Custom themes",
+    "s7.desc": "We design and build a custom, high-quality theme for your website or store instead of an off-the-shelf template — a look no one else has, and fast performance.",
+    "s7.t1": "Custom design",
+    "s7.t2": "Salla themes",
+    "s7.t3": "High performance",
 
     "process.title": "How we work",
     "process.lead": "Four clear stages — at each one you know where we are and what comes next.",
