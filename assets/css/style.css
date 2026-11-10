@@ -1,7 +1,8 @@
 /* ==========================================================================
    Digital Pass — website styles
    Built on the Digital Pass brand guidelines v1.0: palette & gradient (p.14–17),
-   IBM Plex type (p.18–20), corner radii & elevation (p.23), product shots (p.25).
+   IBM Plex type for Arabic and the wordmark (p.18–20), corner radii & elevation (p.23),
+   product shots (p.25). English text is set in Inter.
    ========================================================================== */
 
 /* ---------- Tokens ---------- */
@@ -27,8 +28,9 @@
 
   --r-s: 10px; --r-m: 16px; --r-l: 28px; --r-pill: 999px;
 
-  --font-ar: "IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif;
-  --font-en: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-ar: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --font-en: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-brand: "IBM Plex Sans", "Inter", system-ui, sans-serif; /* the DIGITAL PASS wordmark only */
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font: var(--font-ar);
 
@@ -132,11 +134,11 @@ html[lang="en"] .h2 { letter-spacing: -.02em; line-height: 1.1; }
   background: transparent; border-bottom-color: transparent; color: #fff;
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.header-inner { height: 100%; display: flex; align-items: center; gap: 32px; }
+.header-inner { height: 100%; display: flex; align-items: center; gap: 20px; }
 
 .brand { display: inline-flex; align-items: center; gap: 12px; flex: none; direction: ltr; } /* the lockup never mirrors */
 .brand-symbol { width: 25px; height: 35px; fill: url(#dp-grad); }
-.wordmark { font-family: var(--font-en); font-weight: 700; font-size: 18px; letter-spacing: .03em; line-height: 1; white-space: nowrap; }
+.wordmark { font-family: var(--font-brand); font-weight: 700; font-size: 18px; letter-spacing: .03em; line-height: 1; white-space: nowrap; }
 .wm-pass { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--blue); }
 
 .main-nav { display: flex; align-items: center; gap: 4px; margin-inline: auto; }
@@ -145,16 +147,16 @@ html[lang="en"] .h2 { letter-spacing: -.02em; line-height: 1.1; }
 .main-nav a.is-active::after { content: ""; position: absolute; inset: auto 14px 0; height: 2px; border-radius: 2px; background: var(--grad); }
 .nav-cta-mobile { display: none; }
 
-.header-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.header-cta { flex: none; }
 .lang-toggle {
-  min-width: 46px; height: 42px; padding: 0 14px; border-radius: var(--r-pill);
+  flex: none; min-width: 46px; height: 42px; padding: 0 14px; border-radius: var(--r-pill);
   border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 22%, transparent);
   font-family: var(--font-en); font-size: 14px; font-weight: 600; transition: border-color .2s;
 }
 html[lang="en"] .lang-toggle { font-family: var(--font-ar); }
 .lang-toggle:hover { border-color: currentColor; }
 
-.menu-toggle { display: none; width: 44px; height: 44px; border-radius: var(--r-s); place-items: center; }
+.menu-toggle { display: none; flex: none; width: 44px; height: 44px; margin-inline: -9px -6px; border-radius: var(--r-s); place-items: center; }
 .menu-toggle .icon { width: 26px; height: 26px; }
 .menu-toggle .icon-close { display: none; }
 .menu-toggle[aria-expanded="true"] .icon-open { display: none; }
@@ -438,8 +440,9 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 @keyframes pixel-hop { 40% { transform: translateY(-10px); } }
 
 /* ---------- Contact ---------- */
-.contact-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 56px clamp(48px, 7vw, 112px); align-items: start; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px clamp(48px, 7vw, 112px); align-items: center; }
 .contact-info .section-lead { margin-top: 20px; }
+
 /* WhatsApp glyph: icon file from Bootstrap Icons (MIT), painted with currentColor */
 .wa-glyph {
   display: inline-block; flex: none; width: 1em; height: 1em; background-color: currentColor;
@@ -447,24 +450,42 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
           mask: url("../img/whatsapp.svg") center / contain no-repeat;
 }
 
-/* Big WhatsApp call-to-action in the contact section */
-.wa-cta {
-  display: flex; align-items: center; gap: 20px; margin-top: 44px;
-  padding: 20px; padding-inline-end: 28px; border-radius: var(--r-l);
-  background: #EAFBF1; border: 1px solid #BFEFD3; color: var(--navy);
+/* Call and WhatsApp cards */
+.contact-cards { display: grid; gap: 16px; }
+.contact-card {
+  display: flex; align-items: center; gap: 20px;
+  padding: 22px; padding-inline-end: 28px; border-radius: var(--r-l);
+  background: #fff; border: 1px solid var(--line); color: var(--navy);
+  box-shadow: 0 30px 60px -44px rgba(10, 27, 61, .4);
   transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s;
 }
-.wa-cta:hover { transform: translateY(-3px); border-color: #25D366; box-shadow: 0 28px 56px -30px rgba(18, 140, 74, .55); }
-.wa-cta-icon {
-  display: grid; place-items: center; flex: none; width: 76px; height: 76px; border-radius: 50%;
-  background: #25D366; color: #fff; font-size: 42px; box-shadow: 0 14px 30px -10px rgba(37, 211, 102, .7);
-}
-.wa-cta-text { display: grid; gap: 4px; min-width: 0; }
-.wa-cta-title { font-size: clamp(18px, 1.9vw, 22px); font-weight: 700; line-height: 1.35; }
-.wa-cta-sub { font-size: 15px; color: var(--slate); }
-.wa-cta .arrow { flex: none; width: 22px; height: 22px; margin-inline-start: auto; color: #128C4A; }
-.wa-cta:hover .arrow { transform: translateX(-4px); }
-[dir="ltr"] .wa-cta:hover .arrow { transform: scaleX(-1) translateX(-4px); }
+.contact-card:hover { transform: translateY(-3px); }
+.cc-icon { display: grid; place-items: center; flex: none; width: 72px; height: 72px; border-radius: 50%; color: #fff; }
+.cc-text { display: grid; gap: 2px; min-width: 0; }
+.cc-label { font-size: 15px; font-weight: 500; color: var(--slate); }
+.cc-value { font-size: clamp(24px, 2.5vw, 30px); font-weight: 700; line-height: 1.3; }
+.cc-number { font-family: var(--font-en); direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums; white-space: nowrap; }
+[dir="rtl"] .contact-card .cc-number { text-align: right; }
+.contact-card .arrow { flex: none; width: 22px; height: 22px; margin-inline-start: auto; }
+.contact-card:hover .arrow { transform: translateX(-4px); }
+[dir="ltr"] .contact-card:hover .arrow { transform: scaleX(-1) translateX(-4px); }
+
+.contact-card--call .cc-icon { background: var(--grad); box-shadow: 0 14px 30px -10px rgba(45, 99, 252, .65); }
+.contact-card--call .cc-icon .icon { width: 30px; height: 30px; stroke-width: 2; }
+.contact-card--call .arrow { color: var(--blue); }
+.contact-card--call:hover { border-color: var(--b300); box-shadow: 0 30px 60px -32px rgba(45, 99, 252, .5); }
+
+.contact-card--wa { background: #EAFBF1; border-color: #BFEFD3; box-shadow: none; }
+.contact-card--wa .cc-icon { background: #25D366; font-size: 40px; box-shadow: 0 14px 30px -10px rgba(37, 211, 102, .7); }
+.contact-card--wa .arrow { color: #128C4A; }
+.contact-card--wa:hover { border-color: #25D366; box-shadow: 0 28px 56px -30px rgba(18, 140, 74, .55); }
+
+/* Working hours */
+.hours { display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-radius: var(--r-l); background: var(--cloud); }
+.hours-icon { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 1px solid var(--line); color: var(--blue); }
+.hours-text { display: grid; gap: 2px; min-width: 0; }
+.hours-value span { display: inline-block; } /* days and times each stay on one line */
+.hours .hours-value { font-size: 16.5px; font-weight: 600; line-height: 1.6; }
 
 .socials { display: flex; gap: 10px; margin-top: 28px; }
 .socials:empty { display: none; }
@@ -472,53 +493,6 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 .socials a:hover { color: #fff; background: var(--blue); border-color: var(--blue); }
 .socials .icon { width: 19px; height: 19px; }
 .socials--dark a { border-color: rgba(255, 255, 255, .16); color: #fff; }
-
-.form-card {
-  padding: clamp(28px, 3.5vw, 44px); border-radius: var(--r-l);
-  background: #fff; border: 1px solid var(--line);
-  box-shadow: 0 40px 80px -48px rgba(10, 27, 61, .35);
-}
-.contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.field { display: grid; gap: 8px; align-content: start; }
-.field--full { grid-column: 1 / -1; }
-.field label { font-size: 14px; font-weight: 600; }
-.req { color: var(--error); }
-.field input, .field select, .field textarea {
-  width: 100%; min-height: 52px; padding: 12px 16px;
-  border-radius: 14px; border: 1px solid #D3DBE8; background: #fff;
-  font-size: 16px; line-height: 1.5; color: var(--navy);
-  transition: border-color .2s, box-shadow .2s;
-}
-.field textarea { min-height: 140px; resize: vertical; }
-.field ::placeholder { color: #9AA5BA; }
-.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--b300); }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(45, 99, 252, .12); }
-.field.has-error input, .field.has-error textarea { border-color: var(--error); }
-.field-error { font-size: 13px; color: #D92D20; }
-.field-error:empty { display: none; }
-.ltr-input { font-family: var(--mono); font-size: 15px !important; }
-[dir="rtl"] .ltr-input { text-align: right; }
-.field select {
-  appearance: none; -webkit-appearance: none; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364708A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-size: 18px; background-position: left 16px center; padding-left: 44px;
-}
-[dir="ltr"] .field select { background-position: right 16px center; padding-left: 16px; padding-right: 44px; }
-.hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-.form-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 20px; margin-top: 4px; }
-.form-note { font-size: 13.5px; color: var(--slate); }
-.spinner { display: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .35); border-top-color: #fff; animation: spin .8s linear infinite; }
-.submit-btn.is-loading { pointer-events: none; opacity: .9; }
-.submit-btn.is-loading .spinner { display: inline-block; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.alert { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-s); background: var(--b50); border: 1px solid var(--b200); color: var(--b800); font-size: 15px; }
-.alert .icon { width: 22px; height: 22px; margin-top: 1px; color: var(--blue); }
-.alert.is-success { background: #E7F8EF; border-color: #A6E9C8; color: #0C5F38; }
-.alert.is-success .icon { color: var(--success); }
-.alert.is-error { background: #FEEFEE; border-color: #FBC9C5; color: #A2231A; }
-.alert.is-error .icon { color: var(--error); }
 
 /* ---------- Footer ---------- */
 .site-footer { position: relative; isolation: isolate; overflow: hidden; background: var(--deep); color: rgba(255, 255, 255, .62); padding-top: clamp(80px, 9vw, 120px); }
@@ -534,10 +508,11 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 .site-footer ul { display: grid; gap: 10px; font-size: 15px; }
 .site-footer ul a { transition: color .2s; }
 .site-footer ul a:hover { color: #fff; }
-.footer-contact a, .footer-contact span { unicode-bidi: isolate; }
-.footer-wa { display: inline-flex; align-items: center; gap: 10px; }
-.footer-wa .wa-glyph { font-size: 22px; color: #25D366; }
-.footer-bottom .copy { direction: ltr; unicode-bidi: isolate; }
+.footer-contact a, .footer-hours { display: inline-flex; align-items: flex-start; gap: 10px; }
+.footer-contact .icon { width: 19px; height: 19px; margin-top: 4px; }
+.footer-contact .wa-glyph { font-size: 20px; margin-top: 3px; color: #25D366; }
+.footer-contact .cc-number { font-weight: 500; }
+.footer-bottom .copy { direction: ltr; unicode-bidi: isolate; font-family: var(--font-en); }
 .footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 0 32px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: 14px; color: rgba(255, 255, 255, .45); }
 
 /* ---------- WhatsApp float ---------- */
@@ -605,6 +580,7 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 .sticker:nth-child(4) { animation-delay: -3.6s; }
 .sticker:hover { scale: 1.06; }
 .sticker.is-dragging { cursor: grabbing; scale: 1.1; animation-play-state: paused; z-index: 2; }
+.sticker[lang="en"] { font-family: var(--font-en); }
 .sticker--white { background: #fff; color: var(--navy); }
 .sticker--cyan { background: var(--cyan); color: var(--navy); }
 .sticker--navy { background: var(--navy); color: #fff; border: 1px solid rgba(255, 255, 255, .22); }
@@ -663,7 +639,7 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 .footer-giant {
   direction: ltr; text-align: center; white-space: nowrap; user-select: none;
   margin-top: 8px; margin-bottom: -.2em;
-  font-family: var(--font-en); font-size: clamp(56px, 15.2vw, 236px); font-weight: 700; line-height: 1; letter-spacing: -.045em;
+  font-family: var(--font-brand); font-size: clamp(56px, 15.2vw, 236px); font-weight: 700; line-height: 1; letter-spacing: -.045em;
 }
 .fg-digital { color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .22); }
 .fg-pass { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--cyan); }
@@ -700,6 +676,7 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
   .hero-caps li:nth-child(n+3) { border-top: 1px solid rgba(255, 255, 255, .1); }
 
   .section-top, .about-cols, .contact-grid { grid-template-columns: 1fr; }
+  .contact-grid { gap: 40px; }
   .section-top { align-items: start; }
 
   .svc { grid-template-columns: 36px minmax(0, 1fr) 44px; grid-template-areas: "num title go" "num body go"; gap: 10px 16px; padding: 28px 8px; align-items: start; }
@@ -748,11 +725,12 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
   .tape { padding: 12px 0; }
   .tape--b { margin-top: -2px; }
 
-  .wa-cta { gap: 16px; padding: 16px; padding-inline-end: 20px; }
-  .wa-cta-icon { width: 64px; height: 64px; font-size: 36px; }
+  .contact-card { gap: 16px; padding: 16px; padding-inline-end: 18px; }
+  .cc-icon { width: 60px; height: 60px; }
+  .contact-card--call .cc-icon .icon { width: 26px; height: 26px; }
+  .contact-card--wa .cc-icon { font-size: 34px; }
+  .hours { padding: 14px 16px; }
   .wa-float { bottom: 18px; inset-inline-end: 18px; width: 60px; height: 60px; font-size: 33px; }
-  .contact-form { grid-template-columns: 1fr; }
-  .form-footer .btn { width: 100%; }
   .footer-grid { grid-template-columns: 1fr; gap: 36px; }
   .footer-top .btn { width: 100%; }
 }

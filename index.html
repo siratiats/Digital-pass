@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Digital Pass — مفتاحك إلى العالم الرقمي</title>
-  <meta name="description" content="Digital Pass شركة حلول رقمية تبني للشركات أنظمة مخصّصة وتطبيقات ومواقع ومتاجر إلكترونية وحلولاً لمتاجر سلة، وتديرها معها بعد الإطلاق.">
+  <title>Digital Pass | مفتاحك إلى العالم الرقمي</title>
+  <meta name="description" content="Digital Pass شركة حلول رقمية تبني للأفراد والشركات الصغيرة والمتوسطة أنظمة مخصّصة وتطبيقات ومواقع ومتاجر إلكترونية وحلولاً لمتاجر سلة، وتديرها معهم بعد الإطلاق.">
   <meta name="theme-color" content="#060F24">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Digital Pass — مفتاحك إلى العالم الرقمي">
+  <meta property="og:title" content="Digital Pass | مفتاحك إلى العالم الرقمي">
   <meta property="og:description" content="نصمّم ونبني الأنظمة والتطبيقات والمواقع التي يحتاجها عملك، ونبقى معك بعد الإطلاق.">
   <meta property="og:url" content="https://digital-pass.co/">
   <meta property="og:image" content="https://digital-pass.co/assets/img/og-image.png">
@@ -22,7 +22,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -47,8 +47,8 @@
 
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
     <symbol id="i-arrow-go" viewBox="0 0 24 24"><path d="M7 17V7h10"/><path d="M17 17 7 7"/></symbol>
-    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
-    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-call" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
     <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
@@ -62,10 +62,17 @@
 <!-- ============ Header ============ -->
 <header class="site-header" id="site-header">
   <div class="container header-inner">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="فتح القائمة" data-i18n-aria="nav.menu">
+      <svg class="icon icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
+      <svg class="icon icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+
     <a href="#top" class="brand" aria-label="Digital Pass">
       <svg class="brand-symbol" aria-hidden="true"><use href="#dp-symbol"/></svg>
       <span class="wordmark"><span class="wm-digital">DIGITAL</span> <span class="wm-pass">PASS</span></span>
     </a>
+
+    <button class="lang-toggle" type="button" data-lang-toggle lang="en">EN</button>
 
     <nav class="main-nav" id="main-nav" aria-label="القائمة الرئيسية" data-i18n-aria="nav.label">
       <a href="#services" data-i18n="nav.services">الخدمات</a>
@@ -75,14 +82,7 @@
       <a href="#contact" class="btn btn-primary nav-cta-mobile" data-i18n="nav.cta">ابدأ مشروعك</a>
     </nav>
 
-    <div class="header-actions">
-      <button class="lang-toggle" type="button" data-lang-toggle lang="en">EN</button>
-      <a class="btn btn-primary btn-sm header-cta" href="#contact" data-i18n="nav.cta">ابدأ مشروعك</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="فتح القائمة" data-i18n-aria="nav.menu">
-        <svg class="icon icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
-        <svg class="icon icon-close" aria-hidden="true"><use href="#i-close"/></svg>
-      </button>
-    </div>
+    <a class="btn btn-primary btn-sm header-cta" href="#contact" data-i18n="nav.cta">ابدأ مشروعك</a>
   </div>
 </header>
 
@@ -95,8 +95,8 @@
     <div class="grain" aria-hidden="true"></div>
 
     <div class="stickers" aria-hidden="true">
-      <span class="sticker sticker--white" style="--r:-8deg;top:24%;inset-inline-end:31%">UI/UX</span>
-      <span class="sticker sticker--cyan" style="--r:7deg;top:33%;inset-inline-end:7%">iOS · Android</span>
+      <span class="sticker sticker--white" lang="en" style="--r:-8deg;top:24%;inset-inline-end:31%">UI/UX</span>
+      <span class="sticker sticker--cyan" lang="en" style="--r:7deg;top:33%;inset-inline-end:7%">iOS · Android</span>
       <span class="sticker sticker--navy" style="--r:-5deg;top:61%;inset-inline-end:25%" data-i18n="hero.s1">دعم بعد الإطلاق</span>
       <span class="sticker sticker--grad" style="--r:10deg;top:72%;inset-inline-end:5%" data-i18n="hero.s2">متاجر سلة</span>
     </div>
@@ -105,7 +105,7 @@
       <div class="hero-copy">
         <p class="eyebrow reveal"><span class="eyebrow-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">نستقبل مشاريع جديدة</span></p>
         <h1 class="hero-title reveal" data-i18n-html="hero.title">مفتاحك إلى<br><span class="text-grad">العالم الرقمي</span></h1>
-        <p class="hero-lead reveal" data-i18n-html="hero.lead">نصمّم ونبني <span class="rotator" data-words="الأنظمة|التطبيقات|المواقع|متاجر سلة|الثيمات"><span class="rotator-word">الأنظمة</span></span> التي يحتاجها عملك — ونبقى معك بعد الإطلاق.</p>
+        <p class="hero-lead reveal" data-i18n-html="hero.lead">نصمّم ونبني <span class="rotator" data-words="الأنظمة|التطبيقات|المواقع|متاجر سلة|الثيمات"><span class="rotator-word">الأنظمة</span></span> التي يحتاجها عملك، ونبقى معك بعد الإطلاق.</p>
         <div class="hero-actions reveal">
           <a href="#contact" class="btn btn-light btn-lg magnetic">
             <span data-i18n="hero.cta">ابدأ مشروعك</span>
@@ -139,8 +139,12 @@
       <p class="statement reveal" data-i18n-html="about.statement">التقنية الجيدة لا تُرى… <span class="soft">تُحَسّ في سرعة العمل وسهولته.</span></p>
 
       <div class="about-cols">
-        <p class="about-text reveal" data-i18n="about.text">Digital Pass شركة حلول رقمية تبني للشركات أنظمة مخصّصة حسب احتياجها، وتطوّر التطبيقات والمواقع وتديرها بعد إطلاقها. نتعامل مع التقنية كمفتاح يفتح لعملائنا باباً جديداً للنمو، لا عبئاً إضافياً عليهم.</p>
+        <p class="about-text reveal" data-i18n="about.text">Digital Pass شركة حلول رقمية تبني لعملائها أنظمة مخصّصة حسب احتياجهم، وتطوّر التطبيقات والمواقع وتديرها بعد إطلاقها. نتعامل مع التقنية كمفتاح يفتح لعملائنا باباً جديداً للنمو، لا عبئاً إضافياً عليهم.</p>
         <div class="about-vm">
+          <div class="vm reveal">
+            <h2 class="vm-title" data-i18n="about.serveT">من نخدم</h2>
+            <p data-i18n="about.serve">خدماتنا موجّهة للأفراد والشركات الصغيرة والمتوسطة فقط.</p>
+          </div>
           <div class="vm reveal">
             <h2 class="vm-title" data-i18n="about.visionT">رؤيتنا</h2>
             <p data-i18n="about.vision">أن نكون البوابة التي تعبر منها الشركات إلى المستقبل الرقمي بثقة.</p>
@@ -166,10 +170,10 @@
       </div>
 
       <div class="svc-group">
-        <h3 class="svc-group-title reveal"><span data-i18n="services.g1">الأنظمة والتطبيقات</span><span class="svc-count">01 — 04</span></h3>
+        <h3 class="svc-group-title reveal"><span data-i18n="services.g1">الأنظمة والتطبيقات</span><span class="svc-count">01-04</span></h3>
         <ul class="svc-list">
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="systems">
+            <a href="#contact" class="svc">
               <span class="svc-num">01</span>
               <span class="svc-title" data-i18n="s1.title">الأنظمة المخصّصة</span>
               <span class="svc-body">
@@ -180,7 +184,7 @@
             </a>
           </li>
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="apps">
+            <a href="#contact" class="svc">
               <span class="svc-num">02</span>
               <span class="svc-title" data-i18n="s2.title">تطوير التطبيقات</span>
               <span class="svc-body">
@@ -191,7 +195,7 @@
             </a>
           </li>
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="management">
+            <a href="#contact" class="svc">
               <span class="svc-num">03</span>
               <span class="svc-title" data-i18n="s3.title">إدارة التطبيقات</span>
               <span class="svc-body">
@@ -202,7 +206,7 @@
             </a>
           </li>
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="solutions">
+            <a href="#contact" class="svc">
               <span class="svc-num">04</span>
               <span class="svc-title" data-i18n="s4.title">الحلول الرقمية</span>
               <span class="svc-body">
@@ -216,21 +220,21 @@
       </div>
 
       <div class="svc-group">
-        <h3 class="svc-group-title reveal"><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span><span class="svc-count">05 — 07</span></h3>
+        <h3 class="svc-group-title reveal"><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span><span class="svc-count">05-07</span></h3>
         <ul class="svc-list">
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="websites">
+            <a href="#contact" class="svc">
               <span class="svc-num">05</span>
               <span class="svc-title" data-i18n="s5.title">تطوير المواقع</span>
               <span class="svc-body">
-                <span class="svc-desc" data-i18n="s5.desc">نبني المواقع بجميع أنواعها: مواقع تعريفية تقدّم شركتك، ومتاجر إلكترونية تبيع منتجاتك — بتصميم يعكس هويتك ويعمل بسرعة على كل الأجهزة.</span>
+                <span class="svc-desc" data-i18n="s5.desc">نبني المواقع بجميع أنواعها: مواقع تعريفية تقدّم شركتك، ومتاجر إلكترونية تبيع منتجاتك، بتصميم يعكس هويتك ويعمل بسرعة على كل الأجهزة.</span>
                 <span class="svc-tags" data-i18n="s5.tags">مواقع تعريفية · متاجر إلكترونية · متجاوبة مع الجوال · عربي وإنجليزي</span>
               </span>
               <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
             </a>
           </li>
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="salla">
+            <a href="#contact" class="svc">
               <span class="svc-num">06</span>
               <span class="svc-title" data-i18n="s6.title">حلول متاجر سلة</span>
               <span class="svc-body">
@@ -241,11 +245,11 @@
             </a>
           </li>
           <li class="reveal">
-            <a href="#contact" class="svc" data-service="themes">
+            <a href="#contact" class="svc">
               <span class="svc-num">07</span>
               <span class="svc-title" data-i18n="s7.title">ثيمات مخصّصة</span>
               <span class="svc-body">
-                <span class="svc-desc" data-i18n="s7.desc">نصمّم ونبرمج ثيماً خاصاً لموقعك أو متجرك بجودة عالية بدل القوالب الجاهزة — بهوية لا تتكرر وأداء سريع.</span>
+                <span class="svc-desc" data-i18n="s7.desc">نصمّم ونبرمج ثيماً خاصاً لموقعك أو متجرك بجودة عالية بدل القوالب الجاهزة، بهوية لا تتكرر وأداء سريع.</span>
                 <span class="svc-tags" data-i18n="s7.tags">تصميم خاص · ثيمات سلة · أداء عالٍ · UI/UX</span>
               </span>
               <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
@@ -265,7 +269,7 @@
           <p class="label label--light reveal" data-i18n="work.label">ماذا نبني</p>
           <h2 class="h2 reveal" data-i18n="work.title">واجهات واضحة تعمل كل يوم</h2>
         </div>
-        <p class="section-lead reveal" data-i18n="work.lead">لوحات تحكم وتطبيقات ومتاجر — نصمّمها لتخدم من يستخدمها، لا لتبدو جميلة فقط.</p>
+        <p class="section-lead reveal" data-i18n="work.lead">لوحات تحكم وتطبيقات ومتاجر نصمّمها لتخدم من يستخدمها، لا لتبدو جميلة فقط.</p>
       </div>
 
       <div class="bento">
@@ -448,81 +452,37 @@
       <div class="contact-info">
         <p class="label reveal" data-i18n="contact.label">تواصل معنا</p>
         <h2 class="h2 reveal" data-i18n-html="contact.title">عندك فكرة؟ <span class="text-grad">لنحوّلها إلى منتج.</span></h2>
-        <p class="section-lead reveal" data-i18n="contact.lead">أخبرنا عن عملك وما تحتاجه، ونعود إليك بخطوات واضحة.</p>
-
-        <a class="wa-cta reveal" data-contact="whatsapp" data-contact-item="whatsapp" href="#" target="_blank" rel="noopener">
-          <span class="wa-cta-icon" aria-hidden="true"><span class="wa-glyph"></span></span>
-          <span class="wa-cta-text">
-            <span class="wa-cta-title" data-i18n="contact.waTitle">تواصل معنا على واتساب</span>
-            <span class="wa-cta-sub" data-i18n="contact.waSub">راسل خدمة العملاء مباشرة</span>
-          </span>
-          <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
-        </a>
+        <p class="section-lead reveal" data-i18n="contact.lead">اتصل بنا أو راسلنا على واتساب، وأخبرنا عن عملك وما تحتاجه.</p>
 
         <div class="socials" data-socials></div>
       </div>
 
-      <div class="form-card reveal">
-        <form id="contact-form" class="contact-form" novalidate>
-          <div class="field">
-            <label for="f-name"><span data-i18n="form.name">الاسم</span> <span class="req" aria-hidden="true">*</span></label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="اكتب اسمك" data-i18n-ph="form.namePh">
-            <span class="field-error" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="f-company" data-i18n="form.company">اسم الشركة</label>
-            <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="اختياري" data-i18n-ph="form.companyPh">
-            <span class="field-error" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="f-email"><span data-i18n="form.email">البريد الإلكتروني</span> <span class="req" aria-hidden="true">*</span></label>
-            <input id="f-email" name="email" type="email" dir="ltr" class="ltr-input" autocomplete="email" required placeholder="name@company.sa">
-            <span class="field-error" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="f-phone"><span data-i18n="form.phone">رقم الجوال</span> <span class="req" aria-hidden="true">*</span></label>
-            <input id="f-phone" name="phone" type="tel" dir="ltr" class="ltr-input" autocomplete="tel" inputmode="tel" required placeholder="05xxxxxxxx">
-            <span class="field-error" aria-live="polite"></span>
-          </div>
-          <div class="field field--full">
-            <label for="f-service" data-i18n="form.service">الخدمة المطلوبة</label>
-            <select id="f-service" name="service">
-              <option value="" data-i18n="form.servicePh">اختر الخدمة</option>
-              <option value="systems" data-i18n="s1.title">الأنظمة المخصّصة</option>
-              <option value="apps" data-i18n="s2.title">تطوير التطبيقات</option>
-              <option value="management" data-i18n="s3.title">إدارة التطبيقات</option>
-              <option value="solutions" data-i18n="s4.title">الحلول الرقمية</option>
-              <option value="websites" data-i18n="s5.title">تطوير المواقع</option>
-              <option value="salla" data-i18n="s6.title">حلول متاجر سلة</option>
-              <option value="themes" data-i18n="s7.title">ثيمات مخصّصة</option>
-              <option value="unsure" data-i18n="form.unsure">لست متأكداً بعد</option>
-            </select>
-          </div>
-          <div class="field field--full">
-            <label for="f-message"><span data-i18n="form.message">تفاصيل الطلب</span> <span class="req" aria-hidden="true">*</span></label>
-            <textarea id="f-message" name="message" rows="5" required placeholder="صف لنا فكرتك أو المشكلة التي تريد حلها" data-i18n-ph="form.messagePh"></textarea>
-            <span class="field-error" aria-live="polite"></span>
-          </div>
+      <div class="contact-cards">
+        <a class="contact-card contact-card--call reveal" data-contact="phone" data-contact-item="phone" href="#">
+          <span class="cc-icon" aria-hidden="true"><svg class="icon"><use href="#i-call"/></svg></span>
+          <span class="cc-text">
+            <span class="cc-label" data-i18n="contact.callTitle">اتصل بنا</span>
+            <span class="cc-value cc-number" data-contact-text="phone" dir="ltr"></span>
+          </span>
+          <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
 
-          <!-- Spam trap: real visitors never see or fill this -->
-          <div class="hp" aria-hidden="true">
-            <label for="f-website">Website</label>
-            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
-          </div>
+        <a class="contact-card contact-card--wa reveal" data-contact="whatsapp" data-contact-item="whatsapp" href="#" target="_blank" rel="noopener">
+          <span class="cc-icon" aria-hidden="true"><span class="wa-glyph"></span></span>
+          <span class="cc-text">
+            <span class="cc-label" data-i18n="contact.waTitle">راسلنا على واتساب</span>
+            <span class="cc-value cc-number" data-contact-text="phone" dir="ltr"></span>
+          </span>
+          <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
 
-          <div class="form-footer field--full">
-            <button type="submit" class="btn btn-primary btn-lg submit-btn">
-              <span class="btn-label" data-i18n="form.submit">أرسل الطلب عبر واتساب</span>
-              <span class="spinner" aria-hidden="true"></span>
-            </button>
-            <p class="form-note" data-i18n="form.privacy">نستخدم بياناتك للرد على طلبك فقط.</p>
-          </div>
-
-          <div class="alert field--full" role="status" hidden>
-            <svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>
-            <p></p>
-          </div>
-        </form>
+        <div class="hours reveal">
+          <span class="hours-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+          <p class="hours-text">
+            <span class="cc-label" data-i18n="contact.hoursTitle">أوقات العمل</span>
+            <span class="hours-value"><span data-i18n="contact.hoursDays">الأحد إلى الخميس،</span> <span data-i18n="contact.hoursTime">من 9:00 صباحاً حتى 4:30 عصراً</span></span>
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -547,7 +507,7 @@
           <svg class="brand-symbol" aria-hidden="true"><use href="#dp-symbol"/></svg>
           <span class="wordmark"><span class="wm-digital">DIGITAL</span> <span class="wm-pass">PASS</span></span>
         </a>
-        <p data-i18n="footer.about">شركة حلول رقمية تبني للشركات أنظمة وتطبيقات ومواقع على مقاس عملها، وتديرها معها بعد الإطلاق.</p>
+        <p data-i18n="footer.about">شركة حلول رقمية تبني للأفراد والشركات الصغيرة والمتوسطة أنظمة وتطبيقات ومواقع على مقاس أعمالهم، وتديرها معهم بعد الإطلاق.</p>
         <div class="socials socials--dark" data-socials></div>
       </div>
 
@@ -577,10 +537,18 @@
       <div>
         <h4 data-i18n="footer.contact">تواصل</h4>
         <ul class="footer-contact">
+          <li data-contact-item="phone">
+            <a data-contact="phone" href="#">
+              <svg class="icon" aria-hidden="true"><use href="#i-call"/></svg><span class="cc-number" data-contact-text="phone" dir="ltr"></span>
+            </a>
+          </li>
           <li data-contact-item="whatsapp">
-            <a class="footer-wa" data-contact="whatsapp" href="#" target="_blank" rel="noopener">
+            <a data-contact="whatsapp" href="#" target="_blank" rel="noopener">
               <span class="wa-glyph" aria-hidden="true"></span><span data-i18n="footer.whatsapp">راسلنا على واتساب</span>
             </a>
+          </li>
+          <li>
+            <span class="footer-hours"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span class="hours-value"><span data-i18n="contact.hoursDays">الأحد إلى الخميس،</span> <span data-i18n="contact.hoursTime">من 9:00 صباحاً حتى 4:30 عصراً</span></span></span>
           </li>
         </ul>
       </div>

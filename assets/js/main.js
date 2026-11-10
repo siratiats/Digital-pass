@@ -58,8 +58,6 @@
       btn.setAttribute("lang", en ? "ar" : "en");
     });
 
-    renderContact();
-    clearFormErrors();
   }
 
   function initLanguage() {
@@ -85,20 +83,18 @@
      Contact details from config.js (empty values are hidden)
      ------------------------------------------------------------------ */
   function renderContact() {
-    var email = (CONFIG.email || "").trim();
-    var phone = (CONFIG.phone || "").trim();
+    var phone = String(CONFIG.phone || "").replace(/[^\d+]/g, "");
+    var phoneText = String(CONFIG.phoneDisplay || CONFIG.phone || "").trim();
     var wa = String(CONFIG.whatsapp || "").replace(/\D/g, "");
-    var loc = CONFIG.location ? CONFIG.location[lang()] || CONFIG.location.ar || "" : "";
-    var values = { email: email, phone: phone, whatsapp: wa, location: loc };
+    var values = { phone: phone, whatsapp: wa };
 
     $$("[data-contact-item]").forEach(function (item) {
       item.hidden = !values[item.dataset.contactItem];
     });
 
-    $$('[data-contact="email"]').forEach(function (a) { a.textContent = email; a.href = "mailto:" + email; });
-    $$('[data-contact="phone"]').forEach(function (a) { a.textContent = phone; a.href = "tel:" + phone.replace(/[^\d+]/g, ""); });
+    $$('[data-contact="phone"]').forEach(function (a) { a.href = "tel:" + phone; });
+    $$('[data-contact-text="phone"]').forEach(function (el) { el.textContent = phoneText; });
     $$('[data-contact="whatsapp"], [data-contact="whatsapp-float"]').forEach(function (a) { a.href = "https://wa.me/" + wa; });
-    $$('[data-contact="location"]').forEach(function (el) { el.textContent = loc; });
 
     var waFloat = $('[data-contact="whatsapp-float"]');
     if (waFloat) waFloat.hidden = !wa;
@@ -181,148 +177,6 @@
       var i = siblings.indexOf(el);
       if (i > 0) el.style.transitionDelay = Math.min(i, 5) * 80 + "ms";
       io.observe(el);
-    });
-  }
-
-  /* ------------------------------------------------------------------
-     "Request this service" pre-selects the service in the form
-     ------------------------------------------------------------------ */
-  function initServiceLinks() {
-    var select = $("#f-service");
-    $$("[data-service]").forEach(function (link) {
-      link.addEventListener("click", function () {
-        if (select) select.value = link.dataset.service;
-        setTimeout(function () { var name = $("#f-name"); if (name) name.focus({ preventScroll: true }); }, 600);
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------
-     Contact form
-     ------------------------------------------------------------------ */
-  var form = null;
-
-  function fieldOf(input) { return input.closest(".field"); }
-
-  function setError(input, text) {
-    var field = fieldOf(input);
-    var out = field && $(".field-error", field);
-    if (!field || !out) return;
-    field.classList.toggle("has-error", !!text);
-    out.textContent = text || "";
-    if (text) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
-  }
-
-  function clearFormErrors() {
-    if (!form) return;
-    $$("input, textarea", form).forEach(function (i) { setError(i, ""); });
-  }
-
-  function validate(input) {
-    var v = input.value.trim();
-    if (input.required && !v) return msg("required");
-    if (input.type === "email" && v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return msg("email");
-    if (input.type === "tel" && v && v.replace(/\D/g, "").length < 9) return msg("phone");
-    return "";
-  }
-
-  function showAlert(type, text) {
-    var box = $(".alert", form);
-    box.hidden = false;
-    box.className = "alert field--full is-" + type;
-    $("use", box).setAttribute("href", type === "error" ? "#i-alert" : "#i-check-circle");
-    $("p", box).textContent = text;
-  }
-
-  function setLoading(on) {
-    var btn = $(".submit-btn", form);
-    var label = $(".btn-label", btn);
-    btn.classList.toggle("is-loading", on);
-    btn.disabled = on;
-    label.textContent = on ? msg("sending") : (lang() === "en" ? I18N.en["form.submit"] : label.dataset.ar);
-  }
-
-  function requestLines(data) {
-    var en = lang() === "en";
-    return [
-      (en ? "Name: " : "الاسم: ") + data.get("name"),
-      (en ? "Company: " : "الشركة: ") + (data.get("company") || "-"),
-      (en ? "Email: " : "البريد: ") + data.get("email"),
-      (en ? "Phone: " : "الجوال: ") + data.get("phone"),
-      (en ? "Service: " : "الخدمة: ") + (data.get("service_label") || "-"),
-      "",
-      data.get("message")
-    ];
-  }
-
-  // No form endpoint → hand the request to WhatsApp as a ready-to-send message.
-  function whatsappHandoff(data, number) {
-    var text = [msg("waIntro"), ""].concat(requestLines(data)).join("\n");
-    var url = "https://wa.me/" + number + "?text=" + encodeURIComponent(text);
-    var win = window.open(url, "_blank");
-    if (win) win.opener = null;
-    else window.location.href = url; // popup blocked → open in the same tab
-  }
-
-  function mailtoFallback(data) {
-    window.location.href = "mailto:" + encodeURIComponent(CONFIG.email || "") +
-      "?subject=" + encodeURIComponent(msg("mailSubject")) +
-      "&body=" + encodeURIComponent(requestLines(data).join("\n"));
-  }
-
-  function initForm() {
-    form = $("#contact-form");
-    if (!form) return;
-
-    var inputs = $$("input:not([name=website]), textarea", form);
-    inputs.forEach(function (input) {
-      input.addEventListener("blur", function () { if (input.value.trim()) setError(input, validate(input)); });
-      input.addEventListener("input", function () { if (fieldOf(input).classList.contains("has-error")) setError(input, validate(input)); });
-    });
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      var firstBad = null;
-      inputs.forEach(function (input) {
-        var err = validate(input);
-        setError(input, err);
-        if (err && !firstBad) firstBad = input;
-      });
-      if (firstBad) { firstBad.focus(); return; }
-
-      // Spam trap filled → pretend success, send nothing.
-      if (form.website && form.website.value) { form.reset(); showAlert("success", msg("success")); return; }
-
-      var data = new FormData(form);
-      data.delete("website");
-      var select = $("#f-service");
-      data.append("service_label", select.value ? select.options[select.selectedIndex].text : "");
-      data.append("language", lang());
-      data.append("page", window.location.href);
-
-      var endpoint = (CONFIG.formEndpoint || "").trim();
-      if (!endpoint) {
-        var wa = String(CONFIG.whatsapp || "").replace(/\D/g, "");
-        if (wa) {
-          whatsappHandoff(data, wa);
-          showAlert("info", msg("whatsapp"));
-        } else {
-          mailtoFallback(data);
-          showAlert("info", msg("mailto"));
-        }
-        return;
-      }
-
-      setLoading(true);
-      fetch(endpoint, { method: "POST", body: data, headers: { Accept: "application/json" } })
-        .then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          form.reset();
-          showAlert("success", msg("success"));
-        })
-        .catch(function () { showAlert("error", msg("error")); })
-        .then(function () { setLoading(false); });
     });
   }
 
@@ -462,11 +316,10 @@
     var year = $("[data-year]");
     if (year) year.textContent = new Date().getFullYear();
 
-    initForm();
+    renderContact();
     initLanguage();
     initHeader();
     initReveal();
-    initServiceLinks();
     initRotator();
     initStickers();
     initSpotlight();
