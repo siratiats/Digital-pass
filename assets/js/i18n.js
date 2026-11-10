@@ -24,7 +24,9 @@ window.DP_I18N = {
       phone: "الرقم غير مكتمل.",
       sending: "جارٍ الإرسال…",
       success: "وصلنا طلبك. سنتواصل معك قريباً لنفهم احتياجك.",
-      error: "لم يكتمل الإرسال. حاول مرة أخرى، وإن تكرر الخطأ راسلنا على البريد مباشرة.",
+      error: "لم يكتمل الإرسال. حاول مرة أخرى، وإن تكرر الخطأ راسلنا على واتساب مباشرة.",
+      whatsapp: "فتحنا واتساب برسالة فيها تفاصيل طلبك — أرسلها وسنعود إليك قريباً.",
+      waIntro: "مرحباً، أرغب في طلب استشارة من موقع Digital Pass:",
       mailto: "فتحنا تطبيق البريد لديك برسالة جاهزة — أرسلها وسنعود إليك قريباً.",
       mailSubject: "طلب استشارة من الموقع",
       langButton: "EN",
@@ -37,7 +39,9 @@ window.DP_I18N = {
       phone: "The number looks incomplete.",
       sending: "Sending…",
       success: "We've got your request. We'll be in touch soon to understand what you need.",
-      error: "Your request didn't go through. Please try again — if it keeps happening, email us directly.",
+      error: "Your request didn't go through. Please try again — if it keeps happening, message us on WhatsApp.",
+      whatsapp: "We've opened WhatsApp with your request ready — send it and we'll get back to you soon.",
+      waIntro: "Hi, I'd like to request a consultation via the Digital Pass website:",
       mailto: "We've opened your email app with a ready message — send it and we'll get back to you soon.",
       mailSubject: "Consultation request from the website",
       langButton: "ع",
@@ -158,12 +162,9 @@ window.DP_I18N = {
     "contact.label": "Contact us",
     "contact.title": "Got an idea? <span class=\"text-grad\">Let's turn it into a product.</span>",
     "contact.lead": "Tell us about your business and what you need — we'll come back with clear next steps.",
-    "contact.email": "Email",
-    "contact.phone": "Phone",
-    "contact.whatsapp": "WhatsApp",
-    "contact.whatsappCta": "Message us directly",
+    "contact.waTitle": "Chat with us on WhatsApp",
+    "contact.waSub": "Message our customer service directly",
     "contact.whatsappAria": "Chat with us on WhatsApp",
-    "contact.location": "Location",
 
     "form.name": "Name",
     "form.namePh": "Your name",
@@ -176,7 +177,7 @@ window.DP_I18N = {
     "form.unsure": "Not sure yet",
     "form.message": "Project details",
     "form.messagePh": "Tell us about your idea or the problem you want to solve",
-    "form.submit": "Send request",
+    "form.submit": "Send via WhatsApp",
     "form.privacy": "We only use your details to reply to your request.",
 
     "footer.tagline": "Your Key to Digital",
@@ -184,6 +185,7 @@ window.DP_I18N = {
     "footer.services": "Services",
     "footer.company": "Company",
     "footer.contact": "Contact",
+    "footer.whatsapp": "Message us on WhatsApp",
     "footer.rights": "All rights reserved."
   }
 };

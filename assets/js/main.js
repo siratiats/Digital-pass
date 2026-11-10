@@ -242,19 +242,32 @@
     label.textContent = on ? msg("sending") : (lang() === "en" ? I18N.en["form.submit"] : label.dataset.ar);
   }
 
-  function mailtoFallback(data) {
-    var lines = [
-      (lang() === "en" ? "Name: " : "الاسم: ") + data.get("name"),
-      (lang() === "en" ? "Company: " : "الشركة: ") + (data.get("company") || "-"),
-      (lang() === "en" ? "Email: " : "البريد: ") + data.get("email"),
-      (lang() === "en" ? "Phone: " : "الجوال: ") + data.get("phone"),
-      (lang() === "en" ? "Service: " : "الخدمة: ") + (data.get("service_label") || "-"),
+  function requestLines(data) {
+    var en = lang() === "en";
+    return [
+      (en ? "Name: " : "الاسم: ") + data.get("name"),
+      (en ? "Company: " : "الشركة: ") + (data.get("company") || "-"),
+      (en ? "Email: " : "البريد: ") + data.get("email"),
+      (en ? "Phone: " : "الجوال: ") + data.get("phone"),
+      (en ? "Service: " : "الخدمة: ") + (data.get("service_label") || "-"),
       "",
       data.get("message")
     ];
+  }
+
+  // No form endpoint → hand the request to WhatsApp as a ready-to-send message.
+  function whatsappHandoff(data, number) {
+    var text = [msg("waIntro"), ""].concat(requestLines(data)).join("\n");
+    var url = "https://wa.me/" + number + "?text=" + encodeURIComponent(text);
+    var win = window.open(url, "_blank");
+    if (win) win.opener = null;
+    else window.location.href = url; // popup blocked → open in the same tab
+  }
+
+  function mailtoFallback(data) {
     window.location.href = "mailto:" + encodeURIComponent(CONFIG.email || "") +
       "?subject=" + encodeURIComponent(msg("mailSubject")) +
-      "&body=" + encodeURIComponent(lines.join("\n"));
+      "&body=" + encodeURIComponent(requestLines(data).join("\n"));
   }
 
   function initForm() {
@@ -290,8 +303,14 @@
 
       var endpoint = (CONFIG.formEndpoint || "").trim();
       if (!endpoint) {
-        mailtoFallback(data);
-        showAlert("info", msg("mailto"));
+        var wa = String(CONFIG.whatsapp || "").replace(/\D/g, "");
+        if (wa) {
+          whatsappHandoff(data, wa);
+          showAlert("info", msg("whatsapp"));
+        } else {
+          mailtoFallback(data);
+          showAlert("info", msg("mailto"));
+        }
         return;
       }
 

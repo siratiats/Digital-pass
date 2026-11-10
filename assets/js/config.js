@@ -10,19 +10,21 @@
 window.DP_CONFIG = {
   /* رابط استقبال نموذج التواصل (POST).
      يعمل مع Formspree أو Web3Forms أو Google Apps Script أو أي API خاص بكم.
-     إذا تُرك فارغاً: يفتح النموذج تطبيق البريد لدى الزائر برسالة جاهزة إلى البريد أدناه.
-     Form endpoint (POST, FormData). Empty = falls back to a pre-filled mailto: to `email`. */
+     إذا تُرك فارغاً: يفتح النموذج واتساب برسالة جاهزة فيها تفاصيل الطلب إلى رقم واتساب أدناه.
+     Form endpoint (POST, FormData). Empty = opens WhatsApp with the request pre-filled to `whatsapp`. */
   formEndpoint: "",
 
-  /* بيانات تجريبية مأخوذة من دليل الهوية — استبدلها بالبيانات الفعلية قبل النشر.
-     Sample values from the brand guide — replace before going live. */
-  email: "hello@digitalpass.sa",
-  phone: "+966 50 000 0000",       // يُعرض كما هو، ويُستخدم للاتصال بعد حذف المسافات
-  whatsapp: "966500000000",        // رقم دولي بدون + أو أصفار بادئة — يُستخدم في wa.me
+  /* رقم خدمة العملاء على واتساب (0532883201) — رقم دولي بدون + أو أصفار بادئة، يُستخدم في wa.me.
+     Customer service WhatsApp number in international format, no + or leading zeros. */
+  whatsapp: "966532883201",
 
+  /* التواصل عبر واتساب فقط — البريد والجوال والموقع مخفية لأنها فارغة.
+     WhatsApp only — email, phone and location stay hidden while empty. */
+  email: "",
+  phone: "",
   location: {
-    ar: "المملكة العربية السعودية",
-    en: "Saudi Arabia"
+    ar: "",
+    en: ""
   },
 
   /* روابط الحسابات الكاملة، مثل: "https://www.linkedin.com/company/digitalpass" */

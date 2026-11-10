@@ -10,11 +10,13 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Digital Pass — مفتاحك إلى العالم الرقمي">
   <meta property="og:description" content="نصمّم ونبني الأنظمة والتطبيقات والمواقع التي يحتاجها عملك، ونبقى معك بعد الإطلاق.">
-  <meta property="og:image" content="assets/img/og-image.png">
+  <meta property="og:url" content="https://digital-pass.co/">
+  <meta property="og:image" content="https://digital-pass.co/assets/img/og-image.png">
   <meta property="og:locale" content="ar_SA">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
 
+  <link rel="canonical" href="https://digital-pass.co/">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -45,10 +47,6 @@
 
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
     <symbol id="i-arrow-go" viewBox="0 0 24 24"><path d="M7 17V7h10"/><path d="M17 17 7 7"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
-    <symbol id="i-call" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
-    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
     <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
@@ -452,24 +450,14 @@
         <h2 class="h2 reveal" data-i18n-html="contact.title">عندك فكرة؟ <span class="text-grad">لنحوّلها إلى منتج.</span></h2>
         <p class="section-lead reveal" data-i18n="contact.lead">أخبرنا عن عملك وما تحتاجه، ونعود إليك بخطوات واضحة.</p>
 
-        <dl class="contact-list reveal">
-          <div data-contact-item="email">
-            <dt><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="contact.email">البريد الإلكتروني</span></dt>
-            <dd><a class="mono" data-contact="email" dir="ltr" href="#"></a></dd>
-          </div>
-          <div data-contact-item="phone">
-            <dt><svg class="icon" aria-hidden="true"><use href="#i-call"/></svg><span data-i18n="contact.phone">الجوال</span></dt>
-            <dd><a class="mono" data-contact="phone" dir="ltr" href="#"></a></dd>
-          </div>
-          <div data-contact-item="whatsapp">
-            <dt><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg><span data-i18n="contact.whatsapp">واتساب</span></dt>
-            <dd><a data-contact="whatsapp" href="#" target="_blank" rel="noopener" data-i18n="contact.whatsappCta">راسلنا مباشرة</a></dd>
-          </div>
-          <div data-contact-item="location">
-            <dt><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span data-i18n="contact.location">الموقع</span></dt>
-            <dd><span data-contact="location"></span></dd>
-          </div>
-        </dl>
+        <a class="wa-cta reveal" data-contact="whatsapp" data-contact-item="whatsapp" href="#" target="_blank" rel="noopener">
+          <span class="wa-cta-icon" aria-hidden="true"><span class="wa-glyph"></span></span>
+          <span class="wa-cta-text">
+            <span class="wa-cta-title" data-i18n="contact.waTitle">تواصل معنا على واتساب</span>
+            <span class="wa-cta-sub" data-i18n="contact.waSub">راسل خدمة العملاء مباشرة</span>
+          </span>
+          <svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
 
         <div class="socials" data-socials></div>
       </div>
@@ -524,7 +512,7 @@
 
           <div class="form-footer field--full">
             <button type="submit" class="btn btn-primary btn-lg submit-btn">
-              <span class="btn-label" data-i18n="form.submit">أرسل الطلب</span>
+              <span class="btn-label" data-i18n="form.submit">أرسل الطلب عبر واتساب</span>
               <span class="spinner" aria-hidden="true"></span>
             </button>
             <p class="form-note" data-i18n="form.privacy">نستخدم بياناتك للرد على طلبك فقط.</p>
@@ -589,9 +577,11 @@
       <div>
         <h4 data-i18n="footer.contact">تواصل</h4>
         <ul class="footer-contact">
-          <li data-contact-item="email"><a class="mono" data-contact="email" dir="ltr" href="#"></a></li>
-          <li data-contact-item="phone"><a class="mono" data-contact="phone" dir="ltr" href="#"></a></li>
-          <li data-contact-item="location"><span data-contact="location"></span></li>
+          <li data-contact-item="whatsapp">
+            <a class="footer-wa" data-contact="whatsapp" href="#" target="_blank" rel="noopener">
+              <span class="wa-glyph" aria-hidden="true"></span><span data-i18n="footer.whatsapp">راسلنا على واتساب</span>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -605,7 +595,7 @@
 </footer>
 
 <a class="wa-float" data-contact="whatsapp-float" href="#" target="_blank" rel="noopener" aria-label="تواصل عبر واتساب" data-i18n-aria="contact.whatsappAria" hidden>
-  <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+  <span class="wa-glyph" aria-hidden="true"></span>
 </a>
 
 <script src="assets/js/config.js"></script>
