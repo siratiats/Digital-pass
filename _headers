@@ -1,0 +1,7 @@
+# Cloudflare Pages headers.
+# Keep the pages.dev copies of the site out of search results; only digital-pass.co should be indexed.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
