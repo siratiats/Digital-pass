@@ -102,8 +102,7 @@
     var social = CONFIG.social || {};
     var networks = [
       { key: "linkedin", icon: "i-linkedin", label: "LinkedIn" },
-      { key: "x", icon: "i-x", label: "X" },
-      { key: "instagram", icon: "i-instagram", label: "Instagram" }
+      { key: "x", icon: "i-x", label: "X" }
     ];
     $$("[data-socials]").forEach(function (box) {
       box.innerHTML = "";

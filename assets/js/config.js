@@ -16,10 +16,12 @@ window.DP_CONFIG = {
   phoneDisplay: "053 288 3401",  // الرقم كما يظهر للزائر
   whatsapp: "966532883401",      // رقم دولي بدون + أو أصفار بادئة، يُستخدم في wa.me
 
-  /* روابط الحسابات الكاملة، مثل: "https://www.linkedin.com/company/digitalpass" */
+  /* حسابات الشركة: لنكد إن و X فقط. ضع الرابط الكامل وتظهر الأيقونة في الموقع تلقائياً.
+     مثال: linkedin: "https://www.linkedin.com/company/digital-pass"
+     بعد إضافة الروابط، أضفها كمان في "sameAs" داخل البيانات المنظمة في index.html.
+     Company accounts (LinkedIn and X only). Icons show up automatically once a link is set. */
   social: {
     linkedin: "",
-    x: "",
-    instagram: ""
+    x: ""
   }
 };

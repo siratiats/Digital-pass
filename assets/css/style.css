@@ -741,3 +741,106 @@ html[lang="ar"] .mb-url { font-family: var(--font-ar); }
   .tape-track { animation: none; }
   .wa-float::before { display: none; }
 }
+
+/* ==========================================================================
+   Service pages (/services/*): hero, offer cards, who-it's-for, FAQ, more services
+   ========================================================================== */
+.page-hero {
+  position: relative; overflow: hidden; isolation: isolate; color: #fff;
+  padding: calc(var(--header-h) + clamp(36px, 6vw, 72px)) 0 clamp(64px, 8vw, 104px);
+  background:
+    linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px) 0 0 / 72px 72px,
+    linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px) 0 0 / 72px 72px,
+    var(--deep);
+}
+.page-hero::before {
+  content: ""; position: absolute; z-index: -1; top: -20%; inset-inline-end: -12%;
+  width: 62%; height: 140%;
+  background: radial-gradient(closest-side, rgba(45, 99, 252, .38), rgba(31, 200, 246, .07) 60%, transparent);
+}
+.page-hero .hero-mark { --mh: clamp(380px, 64vh, 640px); top: 12%; inset-inline-end: -6vw; opacity: .42; }
+.page-hero-copy { position: relative; max-width: 760px; }
+
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 32px; font-size: 14px; color: rgba(255, 255, 255, .58); }
+.crumbs li { display: inline-flex; align-items: center; gap: 8px; }
+.crumbs li + li::before { content: "/"; color: rgba(255, 255, 255, .3); }
+.crumbs a { color: rgba(255, 255, 255, .82); transition: color .2s; }
+.crumbs a:hover { color: #fff; }
+
+.page-title { font-size: clamp(40px, 6.2vw, 88px); line-height: 1.15; font-weight: 700; }
+html[lang="en"] .page-title { letter-spacing: -.03em; line-height: 1.05; }
+.page-lead { margin-top: 24px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.85; color: rgba(255, 255, 255, .72); max-width: 34em; }
+.page-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.page-chips li { padding: 6px 14px; border-radius: var(--r-pill); border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .05); font-size: 14px; color: rgba(255, 255, 255, .86); }
+.page-chips li[lang="en"] { font-family: var(--font-en); }
+.page-hero .hero-actions { margin-top: 36px; }
+.btn .wa-glyph { font-size: 20px; color: #25D366; }
+
+/* What we offer */
+.offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.offer-card {
+  padding: 30px 28px 32px; border-radius: var(--r-l); background: #fff; border: 1px solid var(--line);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s;
+}
+.offer-card:hover { transform: translateY(-4px); border-color: var(--b200); box-shadow: 0 30px 60px -40px rgba(10, 27, 61, .45); }
+.offer-num { display: block; margin-bottom: 18px; font-family: var(--mono); font-size: 13px; color: var(--blue); }
+.offer-card h3 { font-size: 20px; line-height: 1.45; font-weight: 700; }
+.offer-card p { margin-top: 10px; font-size: 16px; line-height: 1.85; color: var(--ink); }
+
+/* Who it's for */
+.fit { display: flex; align-items: center; gap: 22px; margin-top: 16px; padding: 24px 28px; border-radius: var(--r-l); background: var(--navy); color: #fff; }
+.fit-mark { flex: none; display: grid; grid-template-columns: repeat(2, 12px); grid-template-rows: repeat(2, 12px); gap: 4px; }
+.fit-mark i { border-radius: 3px; background: var(--grad); }
+.fit-mark i:nth-child(1) { grid-column: 1; grid-row: 1; }
+.fit-mark i:nth-child(2) { grid-column: 1; grid-row: 2; opacity: .65; }
+.fit-mark i:nth-child(3) { grid-column: 2; grid-row: 2; opacity: .35; }
+.fit-label { display: block; font-size: 14px; font-weight: 600; color: var(--cyan); }
+.fit p { font-size: 17px; line-height: 1.8; }
+
+/* FAQ */
+.faq-sec { background: var(--cloud); }
+.faq { display: grid; gap: 12px; max-width: 900px; }
+.faq details { border-radius: var(--r-m); background: #fff; border: 1px solid var(--line); transition: border-color .2s; }
+.faq details[open] { border-color: var(--b200); }
+.faq summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 20px 24px; cursor: pointer; list-style: none; font-size: 18px; font-weight: 600; line-height: 1.5;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: ""; flex: none; width: 10px; height: 10px; margin-top: -5px;
+  border-bottom: 2px solid var(--blue); border-right: 2px solid var(--blue); /* physical side: points down in both directions */
+  transform: rotate(45deg); transition: transform .2s var(--ease), margin .2s;
+}
+.faq details[open] summary::after { transform: rotate(-135deg); margin-top: 5px; }
+.faq details p { padding: 0 24px 22px; font-size: 16.5px; line-height: 1.85; color: var(--ink); max-width: 46em; }
+
+/* More services */
+.more-sec { background: var(--cloud); }
+.more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.more-card {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px; min-height: 220px;
+  padding: 30px 28px; border-radius: var(--r-l); color: #fff; background: var(--navy);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.more-card:nth-child(2) { background: linear-gradient(160deg, #183889 0%, #0A1B3D 85%); }
+.more-card:nth-child(3) { background: var(--grad); }
+.more-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -32px rgba(10, 27, 61, .55); }
+.more-card h3 { font-size: 21px; line-height: 1.4; font-weight: 700; }
+.more-card p { font-size: 15.5px; line-height: 1.75; color: rgba(255, 255, 255, .74); }
+.more-card:nth-child(3) p { color: rgba(255, 255, 255, .88); }
+.more-go { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; font-size: 15px; font-weight: 600; }
+.more-go .icon { width: 18px; height: 18px; }
+
+@media (max-width: 960px) {
+  .offer-grid, .more-grid { grid-template-columns: 1fr 1fr; }
+  .page-hero .hero-mark { opacity: .22; inset-inline-end: -150px; top: auto; bottom: -90px; }
+}
+@media (max-width: 600px) {
+  .offer-grid, .more-grid { grid-template-columns: 1fr; }
+  .offer-card { padding: 24px 22px 26px; }
+  .fit { flex-direction: column; align-items: flex-start; gap: 14px; padding: 22px; }
+  .faq summary { padding: 18px; font-size: 16.5px; }
+  .faq details p { padding: 0 18px 18px; font-size: 16px; }
+  .more-card { min-height: 0; }
+}
