@@ -464,6 +464,7 @@ html[lang="en"] .statement { letter-spacing: -.02em; line-height: 1.2; }
 .cc-text { display: grid; gap: 2px; min-width: 0; }
 .cc-label { font-size: 15px; font-weight: 500; color: var(--slate); }
 .cc-value { font-size: clamp(24px, 2.5vw, 30px); font-weight: 700; line-height: 1.3; }
+.cc-title { font-size: clamp(20px, 2vw, 24px); font-weight: 700; line-height: 1.35; } /* WhatsApp card: one line, no number */
 .cc-number { font-family: var(--font-en); direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums; white-space: nowrap; }
 [dir="rtl"] .contact-card .cc-number { text-align: right; }
 .contact-card .arrow { flex: none; width: 22px; height: 22px; margin-inline-start: auto; }
