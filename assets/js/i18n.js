@@ -8,11 +8,11 @@ window.DP_I18N = {
   meta: {
     ar: {
       title: "Digital Pass | بناء وتطوير الحلول الرقمية المتعددة",
-      description: "Digital Pass شركة حلول رقمية تبني للأفراد والشركات الصغيرة والمتوسطة أنظمة مخصّصة وتطبيقات ومواقع ومتاجر إلكترونية وحلولاً لمتاجر سلة، وتديرها معهم بعد الإطلاق."
+      description: "Digital Pass شركة حلول رقمية في السعودية والخليج، تبني للأفراد والشركات الصغيرة والمتوسطة الأنظمة والتطبيقات والمواقع ومتاجر سلة، وتديرها معهم بعد الإطلاق."
     },
     en: {
       title: "Digital Pass | Building and Developing Digital Solutions",
-      description: "Digital Pass is a digital solutions company that builds custom systems, apps, websites, online stores and Salla solutions for individuals and small and medium-sized businesses, and runs them after launch."
+      description: "Digital Pass builds systems, apps, websites and Salla stores for individuals and SMEs in Saudi Arabia and the Gulf, and runs them after launch."
     }
   },
 
@@ -67,7 +67,7 @@ window.DP_I18N = {
     "about.statement": "Good technology isn't seen… <span class=\"soft\">it's felt in how fast and easy work becomes.</span>",
     "about.text": "Digital Pass is a digital solutions company. We build custom systems around what each client needs, and develop and run apps and websites after launch. We treat technology as a key that opens a new door to growth for our clients, not an extra burden.",
     "about.serveT": "Who we serve",
-    "about.serve": "Our services are for individuals and small and medium-sized businesses only.",
+    "about.serve": "Our services are for individuals and small and medium-sized businesses only, in Saudi Arabia and the Gulf.",
     "about.visionT": "Our vision",
     "about.vision": "To be the gateway through which businesses cross into the digital future with confidence.",
     "about.missionT": "Our mission",
