@@ -69,9 +69,9 @@ window.DP_I18N = {
     "about.serveT": "Who we serve",
     "about.serve": "Our services are for individuals and small and medium-sized businesses only, in Saudi Arabia and the Gulf.",
     "about.visionT": "Our vision",
-    "about.vision": "To be the gateway through which businesses cross into the digital future with confidence.",
+    "about.vision": "To be the gateway through which individuals and small and medium-sized businesses cross into the digital future with confidence.",
     "about.missionT": "Our mission",
-    "about.mission": "We build systems and apps tailored to each company, and run them alongside it after launch, so its business works more efficiently with less effort.",
+    "about.mission": "We build systems and apps tailored to each client, then run them together after launch, so their work runs more efficiently with less effort.",
 
     "services.label": "Services",
     "services.title": "From idea to operation",
