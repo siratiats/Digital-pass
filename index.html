@@ -27,7 +27,17 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=20261111d">
+  <link rel="stylesheet" href="assets/css/journey.css?v=3d3">
   <script>document.documentElement.classList.add('js');</script>
+  <script>
+    /* 3D journey: start in lite mode for reduced-motion, ?lite=1, saved choice or Save-Data */
+    (function () {
+      var r = document.documentElement, q = location.search, lite = false;
+      try { lite = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]lite=1/.test(q) || localStorage.getItem('dp-lite') === '1' || (navigator.connection && navigator.connection.saveData); } catch (e) {}
+      if (/[?&]lite=0/.test(q)) lite = false;
+      if (lite) r.classList.add('jlite');
+    })();
+  </script>
 
   <!-- Structured data for search engines. If the phone number changes, update it here too (and in assets/js/config.js). -->
   <script type="application/ld+json">
@@ -279,319 +289,239 @@
     <div class="tape tape--b"><div class="tape-track"><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div></div></div>
   </div>
 
-  <!-- ============ About / intro ============ -->
-  <section class="section about" id="about">
-    <div class="container">
-      <p class="label reveal" data-i18n="about.label">من نحن</p>
-      <p class="statement reveal" data-i18n-html="about.statement">التقنية الجيدة لا تُرى… <span class="soft">تُحَسّ في سرعة العمل وسهولته.</span></p>
+  <!-- ============ 3D journey (sections 2-6): one fixed WebGL stage, five scenes, text cards per stop ============ -->
+  <div class="journey" id="journey" data-journey>
 
-      <div class="about-cols">
-        <p class="about-text reveal" data-i18n="about.text">Digital Pass شركة حلول رقمية تبني لعملائها أنظمة مخصّصة حسب احتياجهم، وتطوّر التطبيقات والمواقع وتديرها بعد إطلاقها. نتعامل مع التقنية كمفتاح يفتح لعملائنا باباً جديداً للنمو، لا عبئاً إضافياً عليهم.</p>
-        <div class="about-vm">
-          <div class="vm reveal">
-            <h2 class="vm-title" data-i18n="about.serveT">من نخدم</h2>
-            <p data-i18n="about.serve">خدماتنا موجّهة للأفراد والشركات الصغيرة والمتوسطة فقط، في السعودية ودول الخليج.</p>
-          </div>
-          <div class="vm reveal">
-            <h2 class="vm-title" data-i18n="about.visionT">رؤيتنا</h2>
-            <p data-i18n="about.vision">أن نكون البوابة التي تعبر منها الشركات إلى المستقبل الرقمي بثقة.</p>
-          </div>
-          <div class="vm reveal">
-            <h2 class="vm-title" data-i18n="about.missionT">رسالتنا</h2>
-            <p data-i18n="about.mission">نبني أنظمة وتطبيقات مصمّمة على مقاس كل شركة، ونديرها معها بعد الإطلاق، لتعمل أعمالها بكفاءة أعلى وجهد أقل.</p>
-          </div>
+    <section class="jsec jsec--about" id="about" data-scene="0" data-stops="4">
+      <span class="jsec-tag" hidden data-i18n="about.label">من نحن</span>
+      <article class="jc jc--intro" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="about.label">من نحن</span></p>
+          <h2 class="jc-title jc-title--xl" data-i18n-html="about.statement">التقنية الجيدة لا تُرى… <span class="soft">تُحَسّ في سرعة العمل وسهولته.</span></h2>
+          <p class="jc-text" data-i18n="about.text">Digital Pass شركة حلول رقمية تبني لعملائها أنظمة مخصّصة حسب احتياجهم، وتطوّر التطبيقات والمواقع وتديرها بعد إطلاقها. نتعامل مع التقنية كمفتاح يفتح لعملائنا باباً جديداً للنمو، لا عبئاً إضافياً عليهم.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ Services ============ -->
-  <section class="section services" id="services">
-    <div class="container">
-      <div class="section-top">
-        <div>
-          <p class="label reveal" data-i18n="services.label">خدماتنا</p>
-          <h2 class="h2 reveal" data-i18n="services.title">من الفكرة إلى التشغيل</h2>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="about.label">من نحن</span></p>
+          <h3 class="jc-title" data-i18n="about.serveT">من نخدم</h3>
+          <p class="jc-text jc-text--lg" data-i18n="about.serve">خدماتنا موجّهة للأفراد والشركات الصغيرة والمتوسطة فقط، في السعودية ودول الخليج.</p>
         </div>
-        <p class="section-lead reveal" data-i18n="services.lead">نغطي رحلتك الرقمية كاملة: نبني ما يحتاجه عملك، ونديره معك بعد الإطلاق.</p>
-      </div>
-
-      <div class="svc-group">
-        <h3 class="svc-group-title reveal"><span data-i18n="services.g1">الأنظمة والتطبيقات</span><span class="svc-count">01-04</span></h3>
-        <ul class="svc-list">
-          <li class="reveal">
-            <a href="/services/custom-systems/" class="svc">
-              <span class="svc-num">01</span>
-              <span class="svc-title" data-i18n="s1.title">الأنظمة المخصّصة</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s1.desc">نصمّم ونبني أنظمة داخلية على مقاس سير عمل كل شركة: العمليات، المخزون، العملاء والموارد.</span>
-                <span class="svc-tags" data-i18n="s1.tags">ERP · CRM · لوحات تحكم · بوابات داخلية</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-          <li class="reveal">
-            <a href="/services/mobile-apps/" class="svc">
-              <span class="svc-num">02</span>
-              <span class="svc-title" data-i18n="s2.title">تطوير التطبيقات</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s2.desc">تطبيقات جوال وويب بتجربة استخدام واضحة، من الفكرة والتصميم إلى النشر في المتاجر.</span>
-                <span class="svc-tags" data-i18n="s2.tags">iOS · Android · تطبيقات ويب · UI/UX</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-          <li class="reveal">
-            <a href="/services/mobile-apps/" class="svc">
-              <span class="svc-num">03</span>
-              <span class="svc-title" data-i18n="s3.title">إدارة التطبيقات</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s3.desc">استضافة وتحديثات ومراقبة أداء ودعم فني مستمر، حتى يبقى التطبيق شغّالاً بلا انقطاع.</span>
-                <span class="svc-tags" data-i18n="s3.tags">استضافة · مراقبة · تحديثات · دعم فني</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-          <li class="reveal">
-            <a href="/services/custom-systems/" class="svc">
-              <span class="svc-num">04</span>
-              <span class="svc-title" data-i18n="s4.title">الحلول الرقمية</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s4.desc">نحوّل العمليات اليدوية إلى رقمية، ونربط الأنظمة ببعضها لتعمل كمنظومة واحدة.</span>
-                <span class="svc-tags" data-i18n="s4.tags">أتمتة · تكامل API · تحليل بيانات · استشارات</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="svc-group">
-        <h3 class="svc-group-title reveal"><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span><span class="svc-count">05-07</span></h3>
-        <ul class="svc-list">
-          <li class="reveal">
-            <a href="/services/websites/" class="svc">
-              <span class="svc-num">05</span>
-              <span class="svc-title" data-i18n="s5.title">تطوير المواقع</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s5.desc">نبني المواقع بجميع أنواعها: مواقع تعريفية تقدّم شركتك، ومتاجر إلكترونية تبيع منتجاتك، بتصميم يعكس هويتك ويعمل بسرعة على كل الأجهزة.</span>
-                <span class="svc-tags" data-i18n="s5.tags">مواقع تعريفية · متاجر إلكترونية · متجاوبة مع الجوال · عربي وإنجليزي</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-          <li class="reveal">
-            <a href="/services/salla/" class="svc">
-              <span class="svc-num">06</span>
-              <span class="svc-title" data-i18n="s6.title">حلول متاجر سلة</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s6.desc">حلول تقنية داخل متجرك على سلة: تطبيقات وإضافات تحل احتياجاً محدداً، وربط المتجر بأنظمتك الأخرى ليعمل بكفاءة أعلى.</span>
-                <span class="svc-tags" data-i18n="s6.tags">تطبيقات سلة · ربط وتكامل · أتمتة · تخصيص المتجر</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-          <li class="reveal">
-            <a href="/services/salla/" class="svc">
-              <span class="svc-num">07</span>
-              <span class="svc-title" data-i18n="s7.title">ثيمات مخصّصة</span>
-              <span class="svc-body">
-                <span class="svc-desc" data-i18n="s7.desc">نصمّم ونبرمج ثيماً خاصاً لموقعك أو متجرك بجودة عالية بدل القوالب الجاهزة، بهوية لا تتكرر وأداء سريع.</span>
-                <span class="svc-tags" data-i18n="s7.tags">تصميم خاص · ثيمات سلة · أداء عالٍ · UI/UX</span>
-              </span>
-              <span class="svc-go" aria-hidden="true"><svg class="icon"><use href="#i-arrow-go"/></svg></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ What we build (product shots) ============ -->
-  <section class="section showcase" id="work">
-    <div class="grain" aria-hidden="true"></div>
-    <div class="container">
-      <div class="section-top">
-        <div>
-          <p class="label label--light reveal" data-i18n="work.label">ماذا نبني</p>
-          <h2 class="h2 reveal" data-i18n="work.title">واجهات واضحة تعمل كل يوم</h2>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="about.label">من نحن</span></p>
+          <h3 class="jc-title" data-i18n="about.visionT">رؤيتنا</h3>
+          <p class="jc-text jc-text--lg" data-i18n="about.vision">أن نكون البوابة التي تعبر منها الشركات إلى المستقبل الرقمي بثقة.</p>
         </div>
-        <p class="section-lead reveal" data-i18n="work.lead">لوحات تحكم وتطبيقات ومتاجر نصمّمها لتخدم من يستخدمها، لا لتبدو جميلة فقط.</p>
-      </div>
-
-      <div class="bento">
-        <!-- Dashboard -->
-        <figure class="tile tile--dash reveal">
-          <figcaption class="tile-cap">
-            <strong data-i18n="work.c1t">أنظمة ولوحات تحكم</strong>
-            <span data-i18n="work.c1s">ERP · CRM · تقارير</span>
-          </figcaption>
-          <div class="tile-shot">
-            <div class="mock mock-browser" aria-hidden="true">
-              <div class="mb-bar"><i></i><i></i><i></i><span class="mb-url" data-i18n="mock.urlDash">لوحة التحكم</span></div>
-              <div class="mb-body">
-                <aside class="mb-side">
-                  <span class="mb-logo"></span>
-                  <b class="on" data-i18n="mock.home">الرئيسية</b><b data-i18n="mock.orders">الطلبات</b><b data-i18n="mock.inventory">المخزون</b><b data-i18n="mock.customers">العملاء</b><b data-i18n="mock.reports">التقارير</b><b data-i18n="mock.settings">الإعدادات</b>
-                </aside>
-                <div class="mb-main">
-                  <div class="mb-head"><strong data-i18n="mock.overview">نظرة عامة</strong><span class="mb-pill" data-i18n="mock.thisMonth">هذا الشهر</span></div>
-                  <div class="mb-kpis">
-                    <div class="kpi"><span data-i18n="mock.orders">الطلبات</span><strong>1,284</strong><em>+18%</em></div>
-                    <div class="kpi"><span data-i18n="mock.completion">نسبة الإنجاز</span><strong>96%</strong><em>+4%</em></div>
-                    <div class="kpi"><span data-i18n="mock.active">العملاء النشطون</span><strong>342</strong><em>+9%</em></div>
-                  </div>
-                  <div class="mb-chart">
-                    <div class="mb-chart-head"><b data-i18n="mock.weekly">الطلبات الأسبوعية</b><span data-i18n="mock.weeks">12 أسبوعاً</span></div>
-                    <div class="bars">
-                      <i style="--h:38%"></i><i style="--h:52%"></i><i style="--h:45%"></i><i style="--h:60%"></i><i style="--h:55%"></i><i style="--h:68%"></i>
-                      <i style="--h:62%"></i><i style="--h:74%"></i><i style="--h:70%"></i><i style="--h:82%"></i><i style="--h:78%"></i><i class="hi" style="--h:94%"></i>
-                    </div>
-                  </div>
-                  <div class="mb-table">
-                    <div class="tr th"><span data-i18n="mock.order">الطلب</span><span data-i18n="mock.customer">العميل</span><span data-i18n="mock.status">الحالة</span></div>
-                    <div class="tr"><span class="mono">#1042</span><span data-i18n="mock.client1">شركة الأفق</span><span class="st st--ok" data-i18n="mock.done">مكتمل</span></div>
-                    <div class="tr"><span class="mono">#1041</span><span data-i18n="mock.client2">مؤسسة البناء</span><span class="st st--run" data-i18n="mock.running">قيد التنفيذ</span></div>
-                    <div class="tr"><span class="mono">#1040</span><span data-i18n="mock.client3">متجر الريم</span><span class="st st--wait" data-i18n="mock.review">بانتظار المراجعة</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </figure>
-
-        <!-- Mobile app -->
-        <figure class="tile tile--phone reveal">
-          <figcaption class="tile-cap">
-            <strong data-i18n="work.c2t">تطبيقات الجوال</strong>
-            <span data-i18n="work.c2s">iOS · Android</span>
-          </figcaption>
-          <div class="tile-shot">
-            <div class="mock mock-phone" aria-hidden="true">
-              <div class="ph-island"></div>
-              <div class="ph-screen">
-                <div class="ph-status"><span>9:41</span><span class="ph-sig"><i></i><i></i><i></i></span></div>
-                <div class="ph-hello"><small data-i18n="mock.welcome">مرحباً بك</small><strong data-i18n="mock.myOrders">طلباتي</strong></div>
-                <div class="ph-card">
-                  <small data-i18n="mock.order2048">الطلب ‎#2048</small>
-                  <strong data-i18n="mock.onTheWay">في الطريق إليك</strong>
-                  <div class="ph-steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
-                  <small data-i18n="mock.eta">الوصول المتوقع: اليوم ٤:٣٠ م</small>
-                </div>
-                <div class="ph-sec" data-i18n="mock.recent">آخر الطلبات</div>
-                <div class="ph-item"><span class="ph-ic"></span><span class="ph-tx"><b data-i18n="mock.o2047">طلب ‎#2047</b><small data-i18n="mock.delivered">تم التسليم</small></span><span class="ph-amt" data-i18n="mock.sar240">240 ر.س</span></div>
-                <div class="ph-item"><span class="ph-ic ph-ic--2"></span><span class="ph-tx"><b data-i18n="mock.o2046">طلب ‎#2046</b><small data-i18n="mock.delivered">تم التسليم</small></span><span class="ph-amt" data-i18n="mock.sar85">85 ر.س</span></div>
-                <div class="ph-item"><span class="ph-ic ph-ic--3"></span><span class="ph-tx"><b data-i18n="mock.o2045">طلب ‎#2045</b><small data-i18n="mock.cancelled">ملغي</small></span><span class="ph-amt" data-i18n="mock.sar120">120 ر.س</span></div>
-                <div class="ph-tabs"><i class="on"></i><i></i><i></i><i></i></div>
-              </div>
-            </div>
-          </div>
-        </figure>
-
-        <!-- Online store -->
-        <figure class="tile tile--store reveal">
-          <figcaption class="tile-cap">
-            <strong data-i18n="work.c3t">مواقع ومتاجر إلكترونية</strong>
-            <span data-i18n="work.c3s">مواقع تعريفية · متاجر · سلة</span>
-          </figcaption>
-          <div class="tile-shot">
-            <div class="mock mock-browser mock-store" aria-hidden="true">
-              <div class="mb-bar"><i></i><i></i><i></i><span class="mb-url" data-i18n="mock.urlStore">المتجر</span></div>
-              <div class="st-nav"><b class="st-logo" data-i18n="mock.yourStore">متجرك</b><span data-i18n="mock.home">الرئيسية</span><span data-i18n="mock.products">المنتجات</span><span data-i18n="mock.offers">العروض</span><span class="st-cart" data-i18n="mock.cart">السلة · 2</span></div>
-              <div class="st-hero">
-                <div class="st-hero-tx"><small data-i18n="mock.newCollection">مجموعة جديدة</small><strong data-i18n-html="mock.shopEasy">تسوّق بسهولة<br>من أي جهاز</strong><span class="st-btn" data-i18n="mock.shopNow">تسوّق الآن</span></div>
-                <div class="st-hero-art"><i></i><i></i><i></i></div>
-              </div>
-              <div class="st-grid">
-                <div class="prod"><span class="prod-img" style="--a:#C0D0FE;--b:#628AFD"></span><span data-i18n="mock.p1">ساعة ذكية</span><b data-i18n="mock.p1price">349 ر.س</b></div>
-                <div class="prod"><span class="prod-img" style="--a:#E2E9FF;--b:#96B1FE"></span><span data-i18n="mock.p2">سماعات لاسلكية</span><b data-i18n="mock.p2price">199 ر.س</b></div>
-                <div class="prod"><span class="prod-img" style="--a:#DCE3EF;--b:#64708A"></span><span data-i18n="mock.p3">حقيبة جلدية</span><b data-i18n="mock.p3price">279 ر.س</b></div>
-                <div class="prod"><span class="prod-img" style="--a:#B7F0FD;--b:#1FC8F6"></span><span data-i18n="mock.p4">قارورة حرارية</span><b data-i18n="mock.p4price">89 ر.س</b></div>
-              </div>
-            </div>
-          </div>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ Process ============ -->
-  <section class="section process-sec" id="process">
-    <div class="container">
-      <div class="section-top">
-        <div>
-          <p class="label reveal" data-i18n="process.label">طريقة عملنا</p>
-          <h2 class="h2 reveal" data-i18n="process.title">أربع مراحل واضحة، بلا مفاجآت</h2>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="about.label">من نحن</span></p>
+          <h3 class="jc-title" data-i18n="about.missionT">رسالتنا</h3>
+          <p class="jc-text jc-text--lg" data-i18n="about.mission">نبني أنظمة وتطبيقات مصمّمة على مقاس كل شركة، ونديرها معها بعد الإطلاق، لتعمل أعمالها بكفاءة أعلى وجهد أقل.</p>
         </div>
-        <p class="section-lead reveal" data-i18n="process.lead">تعرف في كل مرحلة أين وصلنا وما الخطوة التالية.</p>
-      </div>
+      </article>
+    </section>
 
-      <ol class="process">
-        <li class="reveal">
-          <span class="p-num">01</span>
-          <h3 class="p-title" data-i18n="step1.title">نفهم</h3>
-          <p data-i18n="step1.desc">نجلس مع فريقك ونفهم سير العمل والمشكلة قبل أن نقترح أي حل.</p>
-        </li>
-        <li class="reveal">
-          <span class="p-num">02</span>
-          <h3 class="p-title" data-i18n="step2.title">نصمّم</h3>
-          <p data-i18n="step2.desc">نرسم الحل وتجربة الاستخدام، ونتفق معك على نطاق عمل مكتوب.</p>
-        </li>
-        <li class="reveal">
-          <span class="p-num">03</span>
-          <h3 class="p-title" data-i18n="step3.title">نبني</h3>
-          <p data-i18n="step3.desc">نطوّر ونختبر على مراحل واضحة، مع تقارير تقدّم دورية.</p>
-        </li>
-        <li class="reveal">
-          <span class="p-num">04</span>
-          <h3 class="p-title" data-i18n="step4.title">نشغّل</h3>
-          <p data-i18n="step4.desc">نطلق، ثم ندير ونطوّر باستمرار حتى يبقى كل شيء يعمل كما يجب.</p>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ============ Why us / values ============ -->
-  <section class="section why" id="why">
-    <div class="container">
-      <div class="section-top">
-        <div>
-          <p class="label reveal" data-i18n="why.label">لماذا Digital Pass</p>
-          <h2 class="h2 reveal" data-i18n="why.title">لا نسلّم ونختفي</h2>
+    <section class="jsec jsec--services" id="services" data-scene="1" data-stops="8">
+      <span class="jsec-tag" hidden data-i18n="services.label">خدماتنا</span>
+      <article class="jc jc--intro" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.label">خدماتنا</span></p>
+          <h2 class="jc-title jc-title--xl" data-i18n="services.title">من الفكرة إلى التشغيل</h2>
+          <p class="jc-text" data-i18n="services.lead">نغطي رحلتك الرقمية كاملة: نبني ما يحتاجه عملك، ونديره معك بعد الإطلاق.</p>
+          <div class="jc-groups"><span data-i18n="services.g1">الأنظمة والتطبيقات</span><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span></div>
         </div>
-        <p class="section-lead reveal" data-i18n="why.lead">نبقى مع عملائنا بعد الإطلاق ونكبر معهم. وهذه القيم الأربع تحكم طريقة عملنا.</p>
-      </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g1">الأنظمة والتطبيقات</span></p>
+          <div class="jc-num" aria-hidden="true">01</div>
+          <h3 class="jc-title" data-i18n="s1.title">الأنظمة المخصّصة</h3>
+          <p class="jc-text" data-i18n="s1.desc">نصمّم ونبني أنظمة داخلية على مقاس سير عمل كل شركة: العمليات، المخزون، العملاء والموارد.</p>
+          <p class="jc-tags" data-i18n="s1.tags">ERP · CRM · لوحات تحكم · بوابات داخلية</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g1">الأنظمة والتطبيقات</span></p>
+          <div class="jc-num" aria-hidden="true">02</div>
+          <h3 class="jc-title" data-i18n="s2.title">تطوير التطبيقات</h3>
+          <p class="jc-text" data-i18n="s2.desc">تطبيقات جوال وويب بتجربة استخدام واضحة، من الفكرة والتصميم إلى النشر في المتاجر.</p>
+          <p class="jc-tags" data-i18n="s2.tags">iOS · Android · تطبيقات ويب · UI/UX</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g1">الأنظمة والتطبيقات</span></p>
+          <div class="jc-num" aria-hidden="true">03</div>
+          <h3 class="jc-title" data-i18n="s3.title">إدارة التطبيقات</h3>
+          <p class="jc-text" data-i18n="s3.desc">استضافة وتحديثات ومراقبة أداء ودعم فني مستمر، حتى يبقى التطبيق شغّالاً بلا انقطاع.</p>
+          <p class="jc-tags" data-i18n="s3.tags">استضافة · مراقبة · تحديثات · دعم فني</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g1">الأنظمة والتطبيقات</span></p>
+          <div class="jc-num" aria-hidden="true">04</div>
+          <h3 class="jc-title" data-i18n="s4.title">الحلول الرقمية</h3>
+          <p class="jc-text" data-i18n="s4.desc">نحوّل العمليات اليدوية إلى رقمية، ونربط الأنظمة ببعضها لتعمل كمنظومة واحدة.</p>
+          <p class="jc-tags" data-i18n="s4.tags">أتمتة · تكامل API · تحليل بيانات · استشارات</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span></p>
+          <div class="jc-num" aria-hidden="true">05</div>
+          <h3 class="jc-title" data-i18n="s5.title">تطوير المواقع</h3>
+          <p class="jc-text" data-i18n="s5.desc">نبني المواقع بجميع أنواعها: مواقع تعريفية تقدّم شركتك، ومتاجر إلكترونية تبيع منتجاتك، بتصميم يعكس هويتك ويعمل بسرعة على كل الأجهزة.</p>
+          <p class="jc-tags" data-i18n="s5.tags">مواقع تعريفية · متاجر إلكترونية · متجاوبة مع الجوال · عربي وإنجليزي</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span></p>
+          <div class="jc-num" aria-hidden="true">06</div>
+          <h3 class="jc-title" data-i18n="s6.title">حلول متاجر سلة</h3>
+          <p class="jc-text" data-i18n="s6.desc">حلول تقنية داخل متجرك على سلة: تطبيقات وإضافات تحل احتياجاً محدداً، وربط المتجر بأنظمتك الأخرى ليعمل بكفاءة أعلى.</p>
+          <p class="jc-tags" data-i18n="s6.tags">تطبيقات سلة · ربط وتكامل · أتمتة · تخصيص المتجر</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="services.g2">المواقع والمتاجر الإلكترونية</span></p>
+          <div class="jc-num" aria-hidden="true">07</div>
+          <h3 class="jc-title" data-i18n="s7.title">ثيمات مخصّصة</h3>
+          <p class="jc-text" data-i18n="s7.desc">نصمّم ونبرمج ثيماً خاصاً لموقعك أو متجرك بجودة عالية بدل القوالب الجاهزة، بهوية لا تتكرر وأداء سريع.</p>
+          <p class="jc-tags" data-i18n="s7.tags">تصميم خاص · ثيمات سلة · أداء عالٍ · UI/UX</p>
+        </div>
+      </article>
+    </section>
 
-      <div class="vbento">
-        <article class="vtile vtile--trust reveal">
-          <span class="vt-num">01</span>
-          <h3 data-i18n="v1.title">الثقة</h3>
-          <p data-i18n="v1.desc">نحفظ بيانات عملائنا وأنظمتهم كأنها لنا، ونفي بما نعد به.</p>
-          <ul class="vt-pills"><li data-i18n="v1.i1">أمان البيانات أولوية في كل قرار</li><li data-i18n="v1.i2">وعود واقعية ومواعيد نلتزم بها</li></ul>
-          <svg class="vt-mark" aria-hidden="true"><use href="#dp-symbol"/></svg>
-        </article>
-        <article class="vtile vtile--clarity reveal">
-          <span class="vt-num">02</span>
-          <h3 data-i18n="v2.title">الوضوح</h3>
-          <p data-i18n="v2.desc">لغة بسيطة، مراحل معروفة، وتكلفة واضحة من البداية.</p>
-          <ul class="vt-pills"><li data-i18n="v2.i1">نطاق عمل مكتوب قبل البدء</li><li data-i18n="v2.i2">تقارير تقدّم دورية وشفافة</li></ul>
-        </article>
-        <article class="vtile vtile--craft reveal">
-          <span class="vt-num">03</span>
-          <h3 data-i18n="v3.title">الإتقان</h3>
-          <p data-i18n="v3.desc">كود نظيف وتجربة استخدام مدروسة في أصغر التفاصيل.</p>
-          <ul class="vt-pills"><li data-i18n="v3.i1">مراجعة واختبار قبل كل إطلاق</li><li data-i18n="v3.i2">توثيق يسهّل التطوير لاحقاً</li></ul>
-        </article>
-        <article class="vtile vtile--partner reveal">
-          <span class="vt-num">04</span>
-          <h3 data-i18n="v4.title">الشراكة</h3>
-          <p data-i18n="v4.desc">نفهم عمل العميل قبل أن نبرمج، ونقيس النتائج معه ونحسّن.</p>
-          <ul class="vt-pills"><li data-i18n="v4.i1">دعم وتطوير مستمر بعد التسليم</li><li data-i18n="v4.i2">تواصل مباشر مع فريق العمل</li></ul>
-          <span class="vt-pixels" aria-hidden="true"><i></i><i></i><i></i></span>
-        </article>
-      </div>
-    </div>
-  </section>
+    <section class="jsec jsec--work" id="work" data-scene="2" data-stops="4">
+      <span class="jsec-tag" hidden data-i18n="work.label">ماذا نبني</span>
+      <article class="jc jc--intro" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="work.label">ماذا نبني</span></p>
+          <h2 class="jc-title jc-title--xl" data-i18n="work.title">واجهات واضحة تعمل كل يوم</h2>
+          <p class="jc-text" data-i18n="work.lead">لوحات تحكم وتطبيقات ومتاجر نصمّمها لتخدم من يستخدمها، لا لتبدو جميلة فقط.</p>
+        </div>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="work.label">ماذا نبني</span></p>
+          <h3 class="jc-title" data-i18n="work.c1t">أنظمة ولوحات تحكم</h3>
+          <p class="jc-tags jc-tags--lg" data-i18n="work.c1s">ERP · CRM · تقارير</p>
+        </div>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="work.label">ماذا نبني</span></p>
+          <h3 class="jc-title" data-i18n="work.c2t">تطبيقات الجوال</h3>
+          <p class="jc-tags jc-tags--lg" data-i18n="work.c2s">iOS · Android</p>
+        </div>
+      </article>
+      <article class="jc " data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="work.label">ماذا نبني</span></p>
+          <h3 class="jc-title" data-i18n="work.c3t">مواقع ومتاجر إلكترونية</h3>
+          <p class="jc-tags jc-tags--lg" data-i18n="work.c3s">مواقع تعريفية · متاجر · سلة</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="jsec jsec--process" id="process" data-scene="3" data-stops="5">
+      <span class="jsec-tag" hidden data-i18n="process.label">طريقة عملنا</span>
+      <article class="jc jc--intro" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="process.label">طريقة عملنا</span></p>
+          <h2 class="jc-title jc-title--xl" data-i18n="process.title">أربع مراحل واضحة، بلا مفاجآت</h2>
+          <p class="jc-text" data-i18n="process.lead">تعرف في كل مرحلة أين وصلنا وما الخطوة التالية.</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="process.label">طريقة عملنا</span></p>
+          <div class="jc-num" aria-hidden="true">01</div>
+          <h3 class="jc-title" data-i18n="step1.title">نفهم</h3>
+          <p class="jc-text" data-i18n="step1.desc">نجلس مع فريقك ونفهم سير العمل والمشكلة قبل أن نقترح أي حل.</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="process.label">طريقة عملنا</span></p>
+          <div class="jc-num" aria-hidden="true">02</div>
+          <h3 class="jc-title" data-i18n="step2.title">نصمّم</h3>
+          <p class="jc-text" data-i18n="step2.desc">نرسم الحل وتجربة الاستخدام، ونتفق معك على نطاق عمل مكتوب.</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="process.label">طريقة عملنا</span></p>
+          <div class="jc-num" aria-hidden="true">03</div>
+          <h3 class="jc-title" data-i18n="step3.title">نبني</h3>
+          <p class="jc-text" data-i18n="step3.desc">نطوّر ونختبر على مراحل واضحة، مع تقارير تقدّم دورية.</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="process.label">طريقة عملنا</span></p>
+          <div class="jc-num" aria-hidden="true">04</div>
+          <h3 class="jc-title" data-i18n="step4.title">نشغّل</h3>
+          <p class="jc-text" data-i18n="step4.desc">نطلق، ثم ندير ونطوّر باستمرار حتى يبقى كل شيء يعمل كما يجب.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="jsec jsec--why" id="why" data-scene="4" data-stops="5">
+      <span class="jsec-tag" hidden data-i18n="why.label">لماذا Digital Pass</span>
+      <article class="jc jc--intro" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="why.label">لماذا Digital Pass</span></p>
+          <h2 class="jc-title jc-title--xl" data-i18n="why.title">لا نسلّم ونختفي</h2>
+          <p class="jc-text" data-i18n="why.lead">نبقى مع عملائنا بعد الإطلاق ونكبر معهم. وهذه القيم الأربع تحكم طريقة عملنا.</p>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="why.label">لماذا Digital Pass</span></p>
+          <div class="jc-num" aria-hidden="true">01</div>
+          <h3 class="jc-title" data-i18n="v1.title">الثقة</h3>
+          <p class="jc-text" data-i18n="v1.desc">نحفظ بيانات عملائنا وأنظمتهم كأنها لنا، ونفي بما نعد به.</p>
+          <ul class="jc-list"><li data-i18n="v1.i1">أمان البيانات أولوية في كل قرار</li><li data-i18n="v1.i2">وعود واقعية ومواعيد نلتزم بها</li></ul>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="why.label">لماذا Digital Pass</span></p>
+          <div class="jc-num" aria-hidden="true">02</div>
+          <h3 class="jc-title" data-i18n="v2.title">الوضوح</h3>
+          <p class="jc-text" data-i18n="v2.desc">لغة بسيطة، مراحل معروفة، وتكلفة واضحة من البداية.</p>
+          <ul class="jc-list"><li data-i18n="v2.i1">نطاق عمل مكتوب قبل البدء</li><li data-i18n="v2.i2">تقارير تقدّم دورية وشفافة</li></ul>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="why.label">لماذا Digital Pass</span></p>
+          <div class="jc-num" aria-hidden="true">03</div>
+          <h3 class="jc-title" data-i18n="v3.title">الإتقان</h3>
+          <p class="jc-text" data-i18n="v3.desc">كود نظيف وتجربة استخدام مدروسة في أصغر التفاصيل.</p>
+          <ul class="jc-list"><li data-i18n="v3.i1">مراجعة واختبار قبل كل إطلاق</li><li data-i18n="v3.i2">توثيق يسهّل التطوير لاحقاً</li></ul>
+        </div>
+      </article>
+      <article class="jc jc--svc" data-card>
+        <div class="jc-in">
+          <p class="jc-kicker"><span class="jc-count" data-count></span><span data-i18n="why.label">لماذا Digital Pass</span></p>
+          <div class="jc-num" aria-hidden="true">04</div>
+          <h3 class="jc-title" data-i18n="v4.title">الشراكة</h3>
+          <p class="jc-text" data-i18n="v4.desc">نفهم عمل العميل قبل أن نبرمج، ونقيس النتائج معه ونحسّن.</p>
+          <ul class="jc-list"><li data-i18n="v4.i1">دعم وتطوير مستمر بعد التسليم</li><li data-i18n="v4.i2">تواصل مباشر مع فريق العمل</li></ul>
+        </div>
+      </article>
+    </section>
+    <div class="jend" aria-hidden="true"></div>
+  </div>
 
   <!-- ============ Contact ============ -->
   <section class="section contact" id="contact">
@@ -634,6 +564,27 @@
   </section>
 
 </main>
+
+
+<!-- ============ Journey HUD (fixed): WebGL canvas, progress, controls ============ -->
+<div class="jhud" id="jhud" aria-hidden="false">
+  <canvas class="jcanvas" id="jcanvas" aria-hidden="true"></canvas>
+  <div class="jvignette" aria-hidden="true"></div>
+  <div class="jwarp" aria-hidden="true"></div>
+  <div class="jflash" aria-hidden="true"></div>
+  <div class="jbar" aria-hidden="true"><i></i></div>
+  <nav class="jrail" aria-label="التقدّم" data-i18n-aria="j.progress">
+    <ol>
+      <li><a href="#about" data-rail="0"><span class="jr-dot"></span><span class="jr-label" data-i18n="about.label">من نحن</span></a></li>
+      <li><a href="#services" data-rail="1"><span class="jr-dot"></span><span class="jr-label" data-i18n="services.label">خدماتنا</span></a></li>
+      <li><a href="#work" data-rail="2"><span class="jr-dot"></span><span class="jr-label" data-i18n="work.label">ماذا نبني</span></a></li>
+      <li><a href="#process" data-rail="3"><span class="jr-dot"></span><span class="jr-label" data-i18n="process.label">طريقة عملنا</span></a></li>
+      <li><a href="#why" data-rail="4"><span class="jr-dot"></span><span class="jr-label" data-i18n="why.label">لماذا Digital Pass</span></a></li>
+    </ol>
+  </nav>
+  <div class="jscroll" aria-hidden="true"><span data-i18n="j.scroll">تابع التمرير</span><i></i></div>
+  <button class="jlite-btn" type="button" data-lite-toggle aria-pressed="false"><span data-i18n="j.lite">وضع خفيف</span></button>
+</div>
 
 <!-- ============ Footer ============ -->
 <footer class="site-footer">
@@ -714,6 +665,9 @@
 
 <script src="assets/js/config.js?v=20261111d"></script>
 <script src="assets/js/i18n.js?v=20261111d"></script>
+<script src="assets/js/journey-i18n.js?v=3d1"></script>
 <script src="assets/js/main.js?v=20261111d"></script>
+<script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
+<script type="module" src="assets/js/journey.js?v=3d2"></script>
 </body>
 </html>
