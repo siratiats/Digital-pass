@@ -39,6 +39,8 @@
       if (saved === '1') on = false; else if (saved === '0') on = true;
       if (/[?&]lite=1/.test(q)) on = false; else if (/[?&]lite=0/.test(q)) on = true;
       if (!window.WebGLRenderingContext || !('noModule' in document.createElement('script'))) on = false;
+      /* iPhone/iPad: static layout for now (the 3D stage ran out of memory in Safari); ?lite=0 still forces it for testing */
+      if ((/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && !/[?&]lite=0/.test(q)) on = false;
       if (on) r.classList.add('j3d');
     })();
   </script>
@@ -680,6 +682,6 @@
 <script src="assets/js/i18n.js?v=20261111d"></script>
 <script src="assets/js/journey-i18n.js?v=hq1"></script>
 <script src="assets/js/main.js?v=20261111d"></script>
-<script type="module" src="assets/js/journey.js?v=hq1" onerror="document.documentElement.classList.remove('j3d')"></script>
+<script type="module" src="assets/js/journey.js?v=hq2" onerror="document.documentElement.classList.remove('j3d')"></script>
 </body>
 </html>

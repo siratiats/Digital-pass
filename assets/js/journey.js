@@ -231,7 +231,8 @@ new MutationObserver(() => {
 document.fonts && document.fonts.ready.then(() => { layout(); applyView(); update(); dirty = true; kick(); });
 
 /* ------------------------------------------------------------------ boot */
-const canGL = webglOK();
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const canGL = webglOK() && (!isIOS || params.get('lite') === '0');   // iOS: static for now, no "Enable 3D" button
 if (!canGL) { hud.classList.add('no-3d'); if (is3d()) root.classList.remove('j3d'); }
 updateLiteBtn(); layout(); applyView(); update();
 state.p = state.pT;
