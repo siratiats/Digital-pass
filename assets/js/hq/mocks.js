@@ -1,5 +1,6 @@
-/* Canvas-drawn UI mockups used as textures on the 3D screens (original Arabic mock copy, EN via DP_I18N). */
-import { FONTS, rr } from './util.js';
+/* Canvas-drawn UI mockups shown on the screens of the showroom floor (Arabic mock copy, EN via DP_I18N). */
+import { roundRect as rr } from './core.js';
+const FONTS = '"IBM Plex Sans Arabic", Inter, system-ui, sans-serif';
 const NAVY = '#0A1B3D', BLUE = '#2D63FC', CYAN = '#1FC8F6', INK = '#2C3A58', SLATE = '#64708A', LINE = '#E3E8F1', CLOUD = '#F4F7FC';
 
 function txt(x, s, px, py, o = {}) {
