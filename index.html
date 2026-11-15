@@ -27,15 +27,19 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=20261111d">
-  <link rel="stylesheet" href="assets/css/journey.css?v=3d3">
+  <link rel="stylesheet" href="assets/css/journey.css?v=hq1">
   <script>document.documentElement.classList.add('js');</script>
   <script>
-    /* 3D journey: start in lite mode for reduced-motion, ?lite=1, saved choice or Save-Data */
+    /* Sections 2-6 tour the Digital Pass HQ in 3D unless: reduced motion, Save-Data, ?lite=1, a saved "lite" choice,
+       no WebGL or no module support. journey.js turns it off again if anything fails; without it the static layout shows. */
     (function () {
-      var r = document.documentElement, q = location.search, lite = false;
-      try { lite = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]lite=1/.test(q) || localStorage.getItem('dp-lite') === '1' || (navigator.connection && navigator.connection.saveData); } catch (e) {}
-      if (/[?&]lite=0/.test(q)) lite = false;
-      if (lite) r.classList.add('jlite');
+      var r = document.documentElement, q = location.search, on = true, saved = null;
+      try { saved = localStorage.getItem('dp-lite'); } catch (e) {}
+      try { if (matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData)) on = false; } catch (e) {}
+      if (saved === '1') on = false; else if (saved === '0') on = true;
+      if (/[?&]lite=1/.test(q)) on = false; else if (/[?&]lite=0/.test(q)) on = true;
+      if (!window.WebGLRenderingContext || !('noModule' in document.createElement('script'))) on = false;
+      if (on) r.classList.add('j3d');
     })();
   </script>
 
@@ -289,7 +293,7 @@
     <div class="tape tape--b"><div class="tape-track"><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div><div class="tape-group"><span>UI/UX</span><span>ERP</span><span>CRM</span><span>iOS</span><span>Android</span><span>API</span><span data-i18n="tape.b7">أتمتة</span><span data-i18n="tape.b8">ثيمات سلة</span></div></div></div>
   </div>
 
-  <!-- ============ 3D journey (sections 2-6): one fixed WebGL stage, five scenes, text cards per stop ============ -->
+  <!-- ============ Sections 2-6: a tour of the Digital Pass HQ (static cards by default; 3D when html.j3d) ============ -->
   <div class="journey" id="journey" data-journey>
 
     <section class="jsec jsec--about" id="about" data-scene="0" data-stops="4">
@@ -341,6 +345,7 @@
           <h3 class="jc-title" data-i18n="s1.title">الأنظمة المخصّصة</h3>
           <p class="jc-text" data-i18n="s1.desc">نصمّم ونبني أنظمة داخلية على مقاس سير عمل كل شركة: العمليات، المخزون، العملاء والموارد.</p>
           <p class="jc-tags" data-i18n="s1.tags">ERP · CRM · لوحات تحكم · بوابات داخلية</p>
+          <a class="jc-more" href="/services/custom-systems/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -350,6 +355,7 @@
           <h3 class="jc-title" data-i18n="s2.title">تطوير التطبيقات</h3>
           <p class="jc-text" data-i18n="s2.desc">تطبيقات جوال وويب بتجربة استخدام واضحة، من الفكرة والتصميم إلى النشر في المتاجر.</p>
           <p class="jc-tags" data-i18n="s2.tags">iOS · Android · تطبيقات ويب · UI/UX</p>
+          <a class="jc-more" href="/services/mobile-apps/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -359,6 +365,7 @@
           <h3 class="jc-title" data-i18n="s3.title">إدارة التطبيقات</h3>
           <p class="jc-text" data-i18n="s3.desc">استضافة وتحديثات ومراقبة أداء ودعم فني مستمر، حتى يبقى التطبيق شغّالاً بلا انقطاع.</p>
           <p class="jc-tags" data-i18n="s3.tags">استضافة · مراقبة · تحديثات · دعم فني</p>
+          <a class="jc-more" href="/services/mobile-apps/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -368,6 +375,7 @@
           <h3 class="jc-title" data-i18n="s4.title">الحلول الرقمية</h3>
           <p class="jc-text" data-i18n="s4.desc">نحوّل العمليات اليدوية إلى رقمية، ونربط الأنظمة ببعضها لتعمل كمنظومة واحدة.</p>
           <p class="jc-tags" data-i18n="s4.tags">أتمتة · تكامل API · تحليل بيانات · استشارات</p>
+          <a class="jc-more" href="/services/custom-systems/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -377,6 +385,7 @@
           <h3 class="jc-title" data-i18n="s5.title">تطوير المواقع</h3>
           <p class="jc-text" data-i18n="s5.desc">نبني المواقع بجميع أنواعها: مواقع تعريفية تقدّم شركتك، ومتاجر إلكترونية تبيع منتجاتك، بتصميم يعكس هويتك ويعمل بسرعة على كل الأجهزة.</p>
           <p class="jc-tags" data-i18n="s5.tags">مواقع تعريفية · متاجر إلكترونية · متجاوبة مع الجوال · عربي وإنجليزي</p>
+          <a class="jc-more" href="/services/websites/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -386,6 +395,7 @@
           <h3 class="jc-title" data-i18n="s6.title">حلول متاجر سلة</h3>
           <p class="jc-text" data-i18n="s6.desc">حلول تقنية داخل متجرك على سلة: تطبيقات وإضافات تحل احتياجاً محدداً، وربط المتجر بأنظمتك الأخرى ليعمل بكفاءة أعلى.</p>
           <p class="jc-tags" data-i18n="s6.tags">تطبيقات سلة · ربط وتكامل · أتمتة · تخصيص المتجر</p>
+          <a class="jc-more" href="/services/salla/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
       <article class="jc jc--svc" data-card>
@@ -395,6 +405,7 @@
           <h3 class="jc-title" data-i18n="s7.title">ثيمات مخصّصة</h3>
           <p class="jc-text" data-i18n="s7.desc">نصمّم ونبرمج ثيماً خاصاً لموقعك أو متجرك بجودة عالية بدل القوالب الجاهزة، بهوية لا تتكرر وأداء سريع.</p>
           <p class="jc-tags" data-i18n="s7.tags">تصميم خاص · ثيمات سلة · أداء عالٍ · UI/UX</p>
+          <a class="jc-more" href="/services/salla/"><span data-i18n="j.more">تفاصيل الخدمة</span><svg class="icon arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </article>
     </section>
@@ -566,12 +577,12 @@
 </main>
 
 
-<!-- ============ Journey HUD (fixed): WebGL canvas, progress, controls ============ -->
-<div class="jhud" id="jhud" aria-hidden="false">
+<!-- ============ Journey HUD (fixed): WebGL canvas, progress, lift display, controls ============ -->
+<div class="jhud" id="jhud">
   <canvas class="jcanvas" id="jcanvas" aria-hidden="true"></canvas>
-  <div class="jvignette" aria-hidden="true"></div>
-  <div class="jwarp" aria-hidden="true"></div>
+  <div class="jposter" aria-hidden="true"></div>
   <div class="jflash" aria-hidden="true"></div>
+  <div class="jvignette" aria-hidden="true"></div>
   <div class="jbar" aria-hidden="true"><i></i></div>
   <nav class="jrail" aria-label="التقدّم" data-i18n-aria="j.progress">
     <ol>
@@ -582,6 +593,8 @@
       <li><a href="#why" data-rail="4"><span class="jr-dot"></span><span class="jr-label" data-i18n="why.label">لماذا Digital Pass</span></a></li>
     </ol>
   </nav>
+  <div class="jlift" aria-hidden="true"><span class="jl-arrow"></span><b class="jl-num">G</b><span class="jl-label"></span></div>
+  <div class="jload" aria-hidden="true"><i></i><span data-i18n="j.loading">نجهّز المبنى…</span></div>
   <div class="jscroll" aria-hidden="true"><span data-i18n="j.scroll">تابع التمرير</span><i></i></div>
   <button class="jlite-btn" type="button" data-lite-toggle aria-pressed="false"><span data-i18n="j.lite">وضع خفيف</span></button>
 </div>
@@ -665,9 +678,8 @@
 
 <script src="assets/js/config.js?v=20261111d"></script>
 <script src="assets/js/i18n.js?v=20261111d"></script>
-<script src="assets/js/journey-i18n.js?v=3d1"></script>
+<script src="assets/js/journey-i18n.js?v=hq1"></script>
 <script src="assets/js/main.js?v=20261111d"></script>
-<script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
-<script type="module" src="assets/js/journey.js?v=3d2"></script>
+<script type="module" src="assets/js/journey.js?v=hq1" onerror="document.documentElement.classList.remove('j3d')"></script>
 </body>
 </html>
