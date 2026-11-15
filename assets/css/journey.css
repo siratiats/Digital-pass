@@ -78,28 +78,30 @@ html.j3d .jcanvas, html.j3d .jposter, html.j3d .jflash, html.j3d .jvignette { di
 html.j3d .jcanvas { z-index: -1; background: #e6eef6; touch-action: pan-y; opacity: 0; transition: opacity .7s var(--ease); }
 html.j3d .jposter { z-index: -2; background: #e6eef6 url("../img/hq-poster.jpg") 50% 50% / cover no-repeat; transition: opacity .7s var(--ease); }
 @media (max-aspect-ratio: 9/10) { html.j3d .jposter { background-image: url("../img/hq-poster-portrait.jpg"); } }
-html.j3d .jflash { z-index: -1; background: var(--white); opacity: var(--f, 0); } /* after the canvas in the DOM: over it, under the page content */
+html.j3d .jflash { z-index: -1; background: var(--white); opacity: var(--f, 0); }
+.jhud:not(.has-f) .jflash { visibility: hidden !important; } /* after the canvas in the DOM: over it, under the page content */
 html.j3d .jvignette { z-index: 20; opacity: calc(1 - var(--f, 0)); background: radial-gradient(130% 100% at 50% 45%, transparent 62%, rgba(10,27,61,.2) 100%); }
 .jhud.is-live .jcanvas, .jhud.is-live .jposter, .jhud.is-live .jflash, .jhud.is-live .jvignette { visibility: visible; }
 .jhud.is-ready .jcanvas { opacity: 1; }
-.jhud.is-ready .jposter { opacity: 0; }
+.jhud.is-ready .jposter { opacity: 0; visibility: hidden; transition: opacity .7s var(--ease), visibility 0s linear .7s; }
 
 /* ---------- Text cards: one per stop ---------- */
 html.j3d .jc {
   position: fixed; z-index: 30; top: 50%; inset-inline-start: clamp(20px, 6vw, 112px);
   width: min(500px, 40vw); transform: translateY(-50%);
-  pointer-events: none; opacity: 0; transition: opacity .45s var(--ease); /* cards never take touches: the page must scroll under the thumb */
+  pointer-events: none; opacity: 0; clip-path: inset(50%); /* cards never take touches: the page must scroll under the thumb */
+  transition: opacity .45s var(--ease), clip-path 0s linear .5s; /* hidden cards are clipped to nothing once faded: not painted, still in the accessibility tree */
 }
 html.j3d .jc--intro { width: min(600px, 46vw); }
-html.j3d .jc.on { opacity: 1; transition: opacity .55s var(--ease) .12s; }
+html.j3d .jc.on { opacity: 1; clip-path: inset(0); transition: opacity .55s var(--ease) .12s, clip-path 0s; }
 html.j3d .jc.on .jc-more { pointer-events: auto; }
 html.j3d .jc-in { height: auto; transform: translateY(46px) scale(.965); transition: transform .9s var(--ease); }
 html.j3d .jc.on .jc-in { transform: none; -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); }
-html.j3d .jc.after .jc-in { transform: translateY(-46px) scale(.965); }
+html.j3d .jc.after:not(.on) .jc-in { transform: translateY(-46px) scale(.965); }
 html.j3d .jc-in::before { transform: scaleX(0); transition: transform 1s var(--ease) .15s; }
 html.j3d .jc.on .jc-in::before { transform: scaleX(1); }
-html.j3d .jc-in > * { opacity: 0; transform: translateY(24px); filter: blur(7px); transition: opacity .8s var(--ease), transform .9s var(--ease), filter .8s var(--ease); }
-html.j3d .jc.on .jc-in > * { opacity: 1; transform: none; filter: none; }
+html.j3d .jc-in > * { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .9s var(--ease); }
+html.j3d .jc.on .jc-in > * { opacity: 1; transform: none; }
 html.j3d .jc.on .jc-in > :nth-child(1) { transition-delay: .18s; }
 html.j3d .jc.on .jc-in > :nth-child(2) { transition-delay: .28s; }
 html.j3d .jc.on .jc-in > :nth-child(3) { transition-delay: .38s; }
@@ -155,7 +157,7 @@ html.j3d .jload { display: flex; }
 @media (max-width: 899px) {
   html.j3d .jc, html.j3d .jc--intro { top: auto; bottom: 0; inset-inline: 0; width: auto; transform: none; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); }
   html.j3d .jc-in { border-radius: 24px; padding: 20px 22px 22px; transform: translateY(60px); max-height: 52vh; max-height: 52svh; overflow: auto; }
-  html.j3d .jc.on .jc-in { transform: none; } html.j3d .jc.after .jc-in { transform: translateY(-30px); }
+  html.j3d .jc.on .jc-in { transform: none; } html.j3d .jc.after:not(.on) .jc-in { transform: translateY(-30px); }
   html.j3d .jc-title { font-size: clamp(24px, 6.4vw, 30px); margin-bottom: 8px; }
   html.j3d .jc-title--xl { font-size: clamp(26px, 7vw, 34px); }
   html.j3d .jc-text { font-size: 15px; line-height: 1.75; } html.j3d .jc-text--lg { font-size: 16.5px; }
@@ -173,6 +175,7 @@ html.j3d .jload { display: flex; }
   html[dir="ltr"] .jr-dot::after { transform-origin: 0 50%; }
   .jr-label { display: none; }
   .jlift { top: calc(var(--header-h) + 30px); font-size: 13px; padding: 7px 14px 7px 11px; }
+  html.j3d .jvignette { display: none; }
   .jlite-btn { bottom: auto; top: calc(var(--header-h) + 24px); inset-inline-start: 12px; padding: 5px 11px; font-size: 11.5px; }
   html:not(.j3d) .jlite-btn { top: auto; bottom: 18px; }
   .jload { bottom: auto; top: calc(var(--header-h) + 64px); }
@@ -197,7 +200,7 @@ html.j3d .jload { display: flex; }
 @media (max-width: 899px) and (min-aspect-ratio: 6/5) {
   html.j3d .jc, html.j3d .jc--intro { bottom: auto; inset-inline: auto; inset-inline-start: 16px; width: min(400px, 46vw); top: calc(var(--header-h) + 8px); transform: none; padding: 0; }
   html.j3d .jc-in { max-height: calc(100vh - var(--header-h) - 22px); max-height: calc(100svh - var(--header-h) - 22px); padding: 12px 18px 14px; transform: translateY(46px) scale(.965); }
-  html.j3d .jc.on .jc-in { transform: none; } html.j3d .jc.after .jc-in { transform: translateY(-46px) scale(.965); }
+  html.j3d .jc.on .jc-in { transform: none; } html.j3d .jc.after:not(.on) .jc-in { transform: translateY(-46px) scale(.965); }
   html.j3d .jc-title { font-size: clamp(20px, 5vw, 26px); } html.j3d .jc-title--xl { font-size: clamp(22px, 5.4vw, 30px); }
   html.j3d .jc-text { font-size: 13px; line-height: 1.55; } html.j3d .jc-text--lg { font-size: 14px; line-height: 1.55; }
   html.j3d .jc-kicker { margin-bottom: 4px; } html.j3d .jc-title { margin-bottom: 6px; } html.j3d .jc-title--xl { margin-bottom: 8px; } html.j3d .jc-groups { margin-top: 8px; } html.j3d .jc-tags { margin-top: 8px; padding-top: 8px; }

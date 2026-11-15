@@ -1,6 +1,6 @@
 /* Digital Pass HQ — the WebGL stage: renderer, lights, the camera's route through the building and the frame update.
    journey.js owns scrolling and the text cards; it calls frame(stop, view) whenever something moved. */
-import { THREE, clamp, lerp, smooth, setAniso, setLang, redrawText, loadBrand, logoGeometry, symbolGeometry, makeSky } from './core.js';
+import { THREE, clamp, lerp, smooth, setAniso, setTexScale, releaseCanvas, setLang, redrawText, loadBrand, logoGeometry, symbolGeometry, makeSky } from './core.js';
 import { buildSite, HQ } from './site.js';
 import { buildFloors, SVC, ROOF, ROOMS, WORK, arc } from './floors.js';
 
@@ -75,6 +75,7 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.6;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = mobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
   setAniso(Math.min(8, renderer.capabilities.getMaxAnisotropy()));
+  setTexScale(mobile ? 0.75 : 1);   // phones: same scene and geometry, lighter textures (Safari on iOS has a tight memory budget)
   setLang(lang);
 
   // text on signs and screens is drawn on canvases: wait briefly for the page's web fonts, redraw if they come later
@@ -84,14 +85,14 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   await Promise.race([fontsLoad, new Promise((r) => setTimeout(r, 1500))]);
 
   const scene = new THREE.Scene();
-  const sun = await makeSky(scene, renderer, { stops: SKY, W: mobile ? 2048 : 3072 });
+  const sun = await makeSky(scene, renderer, { stops: SKY, W: mobile ? 1536 : 3072 });
   scene.fog = new THREE.Fog(0xdbe5ef, 650, 4600);
   const light = new THREE.DirectionalLight(0xfff1de, 4.6), size = mobile ? 150 : 190, aim = new THREE.Vector3(-18, 0, 12);
   light.position.copy(sun).multiplyScalar(600).add(aim); light.target.position.copy(aim);
   light.castShadow = true;
   Object.assign(light.shadow.camera, { left: -size, right: size, top: size, bottom: -size, near: 1, far: 1500 });
   light.shadow.camera.updateProjectionMatrix();
-  const ms = Math.min(mobile ? 2048 : 4096, renderer.capabilities.maxTextureSize);
+  const ms = Math.min(mobile ? 1536 : 4096, renderer.capabilities.maxTextureSize);
   light.shadow.mapSize.set(ms, ms); light.shadow.bias = -0.0003; light.shadow.normalBias = mobile ? 0.7 : 0.4;
   scene.add(light, light.target, new THREE.HemisphereLight(0xeef4ff, 0xd8d4cc, 0.38));
   await tick();
@@ -100,7 +101,7 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   const brandGeo = { logoDark: logoGeometry(brand, { cap: 1, depth: 0.16 }) }; await tick();
   brandGeo.logoLight = logoGeometry(brand, { cap: 1, depth: 0.12, light: true }); brandGeo.symbol = symbolGeometry(brand, { height: 1, depth: 0.045 });
   await tick();
-  const site = await buildSite({ brandGeo, windowSize: mobile ? 1536 : 2048 });
+  const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048 });
   await tick();
   const floors = await buildFloors({ brandGeo, t, group: site.group });
   scene.add(site.group);
@@ -113,7 +114,7 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   if (renderer.compileAsync) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera);
   const textures = new Set();
   scene.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'emissiveMap']) if (m[k]) textures.add(m[k]); });
-  let n = 0; for (const tex of textures) { renderer.initTexture(tex); if (++n % 3 === 0) await tick(); }
+  let n = 0; for (const tex of textures) { renderer.initTexture(tex); if (tex !== scene.background) releaseCanvas(tex); if (++n % 3 === 0) await tick(); }
   floors.sets.forEach((g) => { g.visible = false; });
   renderer.shadowMap.needsUpdate = true;
   if (!fontsReady) fontsLoad.then(() => { redrawText(); if (onChange) onChange(); });
@@ -152,7 +153,7 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   }
 
   return {
-    N: R.N, starts: R.starts, frame, renderer,
+    N: R.N, starts: R.starts, frame, renderer, scene,
     resize(w, h, d) { renderer.setPixelRatio(d); renderer.setSize(w, h, false); },
     setLang(l) { setLang(l); }
   };

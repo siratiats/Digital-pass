@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=20261111d">
-  <link rel="stylesheet" href="assets/css/journey.css?v=hq1">
+  <link rel="stylesheet" href="assets/css/journey.css?v=hq3">
   <script>document.documentElement.classList.add('js');</script>
   <script>
     /* Sections 2-6 tour the Digital Pass HQ in 3D unless: reduced motion, Save-Data, ?lite=1, a saved "lite" choice,
@@ -37,10 +37,10 @@
       try { saved = localStorage.getItem('dp-lite'); } catch (e) {}
       try { if (matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.connection && navigator.connection.saveData)) on = false; } catch (e) {}
       if (saved === '1') on = false; else if (saved === '0') on = true;
+      /* crash guard (see journey.js): the 3D tour was running when this tab crashed → static layout on this device from now on */
+      try { if (sessionStorage.getItem('dp-3d-run')) { sessionStorage.removeItem('dp-3d-run'); localStorage.setItem('dp-3d-crash', '1'); } if (localStorage.getItem('dp-3d-crash') === '1') on = false; } catch (e) {}
       if (/[?&]lite=1/.test(q)) on = false; else if (/[?&]lite=0/.test(q)) on = true;
       if (!window.WebGLRenderingContext || !('noModule' in document.createElement('script'))) on = false;
-      /* iPhone/iPad: static layout for now (the 3D stage ran out of memory in Safari); ?lite=0 still forces it for testing */
-      if ((/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && !/[?&]lite=0/.test(q)) on = false;
       if (on) r.classList.add('j3d');
     })();
   </script>
@@ -682,6 +682,6 @@
 <script src="assets/js/i18n.js?v=20261111d"></script>
 <script src="assets/js/journey-i18n.js?v=hq1"></script>
 <script src="assets/js/main.js?v=20261111d"></script>
-<script type="module" src="assets/js/journey.js?v=hq2" onerror="document.documentElement.classList.remove('j3d')"></script>
+<script type="module" src="assets/js/journey.js?v=hq3" onerror="document.documentElement.classList.remove('j3d')"></script>
 </body>
 </html>

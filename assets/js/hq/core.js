@@ -17,13 +17,17 @@ export function rng(seed = 1) {
 }
 
 /* ---------- canvas textures ---------- */
-let ANISO = 4;
+let ANISO = 4, TEX_SCALE = 1;
 export const setAniso = (a) => { ANISO = a; };
+/* phones: canvases are drawn at a smaller pixel size (same drawing, scaled), which roughly halves texture memory */
+export const setTexScale = (s) => { TEX_SCALE = s; };
 
-export function canvasTex(w, h, draw, { srgb = true, aniso, repeat = true } = {}) {
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  draw(c.getContext('2d'), w, h);
+export function canvasTex(w, h, draw, { srgb = true, aniso, repeat = true, scale } = {}) {
+  const s = scale ?? TEX_SCALE, c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s));
+  const g = c.getContext('2d');
+  if (c.width !== w || c.height !== h) g.scale(c.width / w, c.height / h);
+  draw(g, w, h);
   const t = new THREE.CanvasTexture(c);
   if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
@@ -40,10 +44,14 @@ export function langTex(w, h, draw, opts) {
   langTextures.push({ t, draw, w, h });
   return t;
 }
+/* after upload, canvases whose text never changes are shrunk to 1px so their memory is given back */
+export function releaseCanvas(t) {
+  if (!langTextures.some((e) => e.t === t) && t.image && t.image.getContext) { t.image.width = 1; t.image.height = 1; }
+}
 export function redrawText() {
   for (const e of langTextures) {
-    const g = e.t.image.getContext('2d');
-    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, e.w, e.h);
+    const c = e.t.image, g = c.getContext('2d');
+    g.setTransform(c.width / e.w, 0, 0, c.height / e.h, 0, 0); g.clearRect(0, 0, e.w, e.h);
     g.direction = 'ltr'; g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.globalAlpha = 1; g.shadowBlur = 0;
     e.draw(g, e.w, e.h, LANG);
     e.t.needsUpdate = true;

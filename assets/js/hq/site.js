@@ -95,7 +95,7 @@ function windowMaterial(W) {
     if (!E) { g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(px, py, pw, 2); }
   };
   const draw = (E) => (g) => { g.scale(k, k); g.fillStyle = E ? '#000' : '#3b4450'; g.fillRect(0, 0, 2048, 1536); for (const c of cells) cell(g, c, E); };
-  const map = canvasTex(W, W * 0.75, draw(false), { aniso: 8 }), emi = canvasTex(W, W * 0.75, draw(true), { aniso: 8 });
+  const map = canvasTex(W, W * 0.75, draw(false), { aniso: 8, scale: 1 }), emi = canvasTex(W, W * 0.75, draw(true), { aniso: 8, scale: 1 });
   return std({ map, color: 0xa3aab3, emissiveMap: emi, emissive: 0xffffff, emissiveIntensity: 1.45, roughness: 0.18, metalness: 0.4, envMapIntensity: 0.9 });
 }
 

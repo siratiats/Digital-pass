@@ -106,7 +106,7 @@ function updateCards() {
   hud.classList.toggle('at-start', idx < 0.35 && state.s > -vh * 0.2);
   hud.classList.toggle('is-end', r.bottom < vh + stopH * 0.5);
   // the last view fades into the page background while the contact section slides up over it
-  const f = 1 - smooth(0.45, 1, r.bottom / vh); if (f.toFixed(3) !== state.f) { state.f = f.toFixed(3); hud.style.setProperty('--f', state.f); }
+  const f = 1 - smooth(0.45, 1, r.bottom / vh); if (f.toFixed(3) !== state.f) { state.f = f.toFixed(3); hud.style.setProperty('--f', state.f); hud.classList.toggle('has-f', f > 0); }
   // the lift display shows while riding between two sections
   let ride = -1; for (let i = 0; i < lastCards.length - 1; i++) if (idx > lastCards[i] + 0.5 && idx < lastCards[i] + 1.55) ride = i;
   hud.classList.toggle('is-riding', ride >= 0 && !!stage);
@@ -148,10 +148,10 @@ function render() {
 /* ------------------------------------------------------------------ the WebGL stage (lazy) */
 async function boot3d() {
   if (stage || loading || !is3d()) return;
-  loading = true; hud.classList.add('is-loading');
+  loading = true; hud.classList.add('is-loading'); guard(true);
   try {
     const mobile = mobileQ();
-    dpr = +params.get('dpr') || Math.min(window.devicePixelRatio || 1, mobile ? 1.6 : 1.5);
+    dpr = +params.get('dpr') || Math.min(window.devicePixelRatio || 1, 1.5);
     const { createStage } = await import('./hq/stage.js?v=hq1');
     stage = await createStage({ canvas, cards: cardsBySec.map((c) => c.length), t, lang: curLang, mobile, width: vw, height: vh, dpr, onChange: () => { dirty = true; kick(); } });
     canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); fail(new Error('WebGL context lost')); });
@@ -163,7 +163,7 @@ async function boot3d() {
   }
 }
 function fail() {
-  hud.classList.add('no-3d'); hud.classList.remove('is-loading', 'is-ready', 'is-riding');
+  guard(false); hud.classList.add('no-3d'); hud.classList.remove('is-loading', 'is-ready', 'is-riding');
   if (is3d()) setMode(false, false);
   stage = null;
 }
@@ -185,7 +185,7 @@ function currentCard() {
 }
 function setMode(want3d, persist) {
   const card = state.live ? currentCard() : null;
-  root.classList.toggle('j3d', want3d);
+  root.classList.toggle('j3d', want3d); guard(want3d && (loading || !!stage));
   if (persist) { try { localStorage.setItem(LITE_KEY, want3d ? '0' : '1'); } catch (e) { /* storage blocked */ } }
   updateLiteBtn(); layout(); applyView();
   if (card) {
@@ -231,8 +231,15 @@ new MutationObserver(() => {
 document.fonts && document.fonts.ready.then(() => { layout(); applyView(); update(); dirty = true; kick(); });
 
 /* ------------------------------------------------------------------ boot */
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const canGL = webglOK() && (!isIOS || params.get('lite') === '0');   // iOS: static for now, no "Enable 3D" button
+/* crash guard: a flag lives in sessionStorage while the 3D tour runs in a visible tab. If the browser tab crashes
+   (Safari reloads it), the inline script in <head> finds the flag, switches this device to the static layout for good
+   and the "Enable 3D" button is hidden. Leaving, reloading or hiding the tab clears the flag. */
+const GUARD = 'dp-3d-run', CRASH = 'dp-3d-crash';
+const guard = (on) => { try { if (on && is3d() && !document.hidden) sessionStorage.setItem(GUARD, String(Date.now())); else sessionStorage.removeItem(GUARD); } catch (e) { /* storage blocked */ } };
+let crashed = false; try { crashed = localStorage.getItem(CRASH) === '1'; } catch (e) { /* storage blocked */ }
+addEventListener('pagehide', () => guard(false));
+document.addEventListener('visibilitychange', () => guard(!document.hidden && (loading || !!stage)));
+const canGL = webglOK() && (!crashed || params.get('lite') === '0');
 if (!canGL) { hud.classList.add('no-3d'); if (is3d()) root.classList.remove('j3d'); }
 updateLiteBtn(); layout(); applyView(); update();
 state.p = state.pT;
