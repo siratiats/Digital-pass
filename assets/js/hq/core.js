@@ -237,12 +237,13 @@ async function cloudSkyCanvas(sun, { stops, seed, W, H, cover, glow }) {
   }
   return c;
 }
-export async function makeSky(scene, renderer, { elevation = 45, azimuth = -55, stops, W = 2048, cover = 0.3, glow = 0.18, seed = 7 } = {}) {
+export async function makeSky(scene, renderer, { elevation = 45, azimuth = -55, stops, W = 2048, cover = 0.3, glow = 0.18, seed = 7, env = true } = {}) {
   const sun = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - elevation), THREE.MathUtils.degToRad(azimuth));
   const tex = new THREE.CanvasTexture(await cloudSkyCanvas(sun, { stops, seed, W, H: W / 2, cover, glow }));
   await new Promise((r) => setTimeout(r, 0));
   tex.colorSpace = THREE.SRGBColorSpace; tex.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = tex;
+  if (!env) return sun;
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromEquirectangular(tex).texture;
   pmrem.dispose();

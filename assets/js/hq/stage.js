@@ -69,13 +69,16 @@ function sample(R, t, out) {
 }
 
 /* ---------- stage ---------- */
-export async function createStage({ canvas, cards, t, lang, mobile, width, height, dpr, onChange }) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false });
+/* opts (diagnostics): aa, shadows, env (sky lighting), texScale, upfront (compile + upload everything before the first frame) */
+export async function createStage({ canvas, cards, t, lang, mobile, width, height, dpr, onChange, onStep = () => {}, opts = {} }) {
+  const o = { aa: true, shadows: true, env: true, texScale: mobile ? 0.75 : 1, upfront: true, ...opts };
+  onStep('renderer');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: o.aa, powerPreference: 'high-performance', alpha: false, stencil: false });
   renderer.setPixelRatio(dpr); renderer.setSize(width, height, false);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.6;
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = mobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.enabled = o.shadows; renderer.shadowMap.type = mobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
   setAniso(Math.min(8, renderer.capabilities.getMaxAnisotropy()));
-  setTexScale(mobile ? 0.75 : 1);   // phones: same scene and geometry, lighter textures (Safari on iOS has a tight memory budget)
+  setTexScale(o.texScale);   // phones: same scene and geometry, lighter textures (Safari on iOS has a tight memory budget)
   setLang(lang);
 
   // text on signs and screens is drawn on canvases: wait briefly for the page's web fonts, redraw if they come later
@@ -85,11 +88,12 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   await Promise.race([fontsLoad, new Promise((r) => setTimeout(r, 1500))]);
 
   const scene = new THREE.Scene();
-  const sun = await makeSky(scene, renderer, { stops: SKY, W: mobile ? 1536 : 3072 });
+  onStep('sky');
+  const sun = await makeSky(scene, renderer, { stops: SKY, W: mobile ? 1536 : 3072, env: o.env });
   scene.fog = new THREE.Fog(0xdbe5ef, 650, 4600);
   const light = new THREE.DirectionalLight(0xfff1de, 4.6), size = mobile ? 150 : 190, aim = new THREE.Vector3(-18, 0, 12);
   light.position.copy(sun).multiplyScalar(600).add(aim); light.target.position.copy(aim);
-  light.castShadow = true;
+  light.castShadow = o.shadows;
   Object.assign(light.shadow.camera, { left: -size, right: size, top: size, bottom: -size, near: 1, far: 1500 });
   light.shadow.camera.updateProjectionMatrix();
   const ms = Math.min(mobile ? 1536 : 4096, renderer.capabilities.maxTextureSize);
@@ -97,12 +101,15 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   scene.add(light, light.target, new THREE.HemisphereLight(0xeef4ff, 0xd8d4cc, 0.38));
   await tick();
 
+  onStep('brand');
   const brand = await loadBrand();
   const brandGeo = { logoDark: logoGeometry(brand, { cap: 1, depth: 0.16 }) }; await tick();
   brandGeo.logoLight = logoGeometry(brand, { cap: 1, depth: 0.12, light: true }); brandGeo.symbol = symbolGeometry(brand, { height: 1, depth: 0.045 });
   await tick();
+  onStep('site');
   const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048 });
   await tick();
+  onStep('floors');
   const floors = await buildFloors({ brandGeo, t, group: site.group });
   scene.add(site.group);
   await tick();
@@ -110,12 +117,17 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
   const camera = new THREE.PerspectiveCamera(58, width / height, 1, 7000);
   const R = route(cards), S = { i: 0, v: [0, 0, 0, 0, 0, 58], par: 0, pm: 1, d: 0 };
   // compile every program and upload the textures up front, a few at a time, so no floor stutters on first sight
-  floors.sets.forEach((g) => { g.visible = true; });
-  if (renderer.compileAsync) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera);
-  const textures = new Set();
-  scene.traverse((o) => { for (const m of [].concat(o.material || [])) for (const k of ['map', 'emissiveMap']) if (m[k]) textures.add(m[k]); });
-  let n = 0; for (const tex of textures) { renderer.initTexture(tex); if (tex !== scene.background) releaseCanvas(tex); if (++n % 3 === 0) await tick(); }
-  floors.sets.forEach((g) => { g.visible = false; });
+  if (o.upfront) {
+    floors.sets.forEach((g) => { g.visible = true; });
+    onStep('compile');
+    if (renderer.compileAsync) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera);
+    onStep('textures');
+    const textures = new Set();
+    scene.traverse((m) => { for (const mat of [].concat(m.material || [])) for (const k of ['map', 'emissiveMap']) if (mat[k]) textures.add(mat[k]); });
+    let n = 0; for (const tex of textures) { renderer.initTexture(tex); if (tex !== scene.background) releaseCanvas(tex); if (++n % 3 === 0) await tick(); }
+    floors.sets.forEach((g) => { g.visible = false; });
+  }
+  onStep('ready');
   renderer.shadowMap.needsUpdate = true;
   if (!fontsReady) fontsLoad.then(() => { redrawText(); if (onChange) onChange(); });
 

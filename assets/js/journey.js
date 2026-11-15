@@ -168,7 +168,7 @@ function fail() {
   stage = null;
 }
 function scheduleBoot() {
-  if (!is3d()) return;
+  if (!is3d() || params.has('nostage')) return;   // ?nostage: the 3D layout without WebGL (diagnostics)
   const go = () => { if ('requestIdleCallback' in window) requestIdleCallback(() => boot3d(), { timeout: 1500 }); else setTimeout(boot3d, 200); };
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
   // or right away when the reader is already close to the tour
@@ -235,7 +235,13 @@ document.fonts && document.fonts.ready.then(() => { layout(); applyView(); updat
    (Safari reloads it), the inline script in <head> finds the flag, switches this device to the static layout for good
    and the "Enable 3D" button is hidden. Leaving, reloading or hiding the tab clears the flag. */
 const GUARD = 'dp-3d-run', CRASH = 'dp-3d-crash';
-const guard = (on) => { try { if (on && is3d() && !document.hidden) sessionStorage.setItem(GUARD, String(Date.now())); else sessionStorage.removeItem(GUARD); } catch (e) { /* storage blocked */ } };
+const guard = (on) => {
+  try {
+    if (on && is3d() && !document.hidden) { const v = String(Date.now()); sessionStorage.setItem(GUARD, v); localStorage.setItem(GUARD, v); }
+    else { sessionStorage.removeItem(GUARD); localStorage.removeItem(GUARD); }
+  } catch (e) { /* storage blocked */ }
+};
+setInterval(() => { if (!document.hidden && (loading || stage) && is3d()) guard(true); }, 3000);   // heartbeat: the head script only trusts a fresh flag
 let crashed = false; try { crashed = localStorage.getItem(CRASH) === '1'; } catch (e) { /* storage blocked */ }
 addEventListener('pagehide', () => guard(false));
 document.addEventListener('visibilitychange', () => guard(!document.hidden && (loading || !!stage)));

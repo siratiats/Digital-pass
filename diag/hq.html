@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>فحص المبنى 3D — Digital Pass</title>
+<style>
+  html, body { margin: 0; background: #0a1b3d; color: #fff; font: 15px/1.6 -apple-system, "IBM Plex Sans Arabic", system-ui, sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .panel { position: fixed; z-index: 2; inset: 0 0 auto 0; max-height: 62vh; overflow: auto; padding: calc(10px + env(safe-area-inset-top)) 14px 12px; background: rgba(6, 15, 36, .9); }
+  h1 { margin: 0 0 6px; font-size: 17px; } .st { margin: 0 0 8px; color: #1fc8f6; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; } td { padding: 3px 4px; border-top: 1px solid rgba(255,255,255,.12); vertical-align: top; }
+  td.v { direction: ltr; text-align: left; font-family: ui-monospace, Menlo, monospace; font-size: 12px; word-break: break-all; }
+  .ok { color: #5be49b; } .bad { color: #ff8a8a; } .run { color: #ffd166; }
+  button { margin-top: 10px; padding: 8px 14px; border: 0; border-radius: 99px; background: #2d63fc; color: #fff; font: inherit; font-weight: 700; }
+  #log { margin-top: 8px; direction: ltr; text-align: left; font: 11px/1.4 ui-monospace, Menlo, monospace; color: #9fb3d9; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="panel">
+  <h1>فحص المبنى 3D على جهازك</h1>
+  <p class="st" id="st">جاري التحضير…</p>
+  <table id="tbl"></table>
+  <button id="again" hidden>إعادة الفحص من البداية</button>
+  <div id="log"></div>
+</div>
+<script type="module">
+/* Runs the HQ stage in steps and remembers (in localStorage) the last step reached, so a crash can be located:
+   after Safari reloads the tab, the run that never finished is marked "crashed at <step>" and the next, lighter
+   configuration runs. Stops at the first configuration that works and shows a summary to screenshot. */
+const KEY = 'dp-diag-v1', q = new URLSearchParams(location.search);
+const $ = (id) => document.getElementById(id);
+const CONFIGS = [
+  ['A', 'إعدادات الجوال الحالية', {}],
+  ['B', 'بدون ظلال', { shadows: false }],
+  ['C', 'بدون تنعيم الحواف، دقة 1', { aa: false, dpr: 1 }],
+  ['D', 'بدون إضاءة السماء', { env: false }],
+  ['E', 'بدون تجهيز كل شي مقدماً', { upfront: false }],
+  ['F', 'الصور بنص الحجم', { texScale: 0.5 }],
+  ['G', 'أخف إعداد (كل اللي فوق)', { shadows: false, aa: false, dpr: 1, env: false, upfront: false, texScale: 0.5 }]
+];
+let S = null; try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) { /* ignore */ }
+if (!S || q.has('reset')) S = { results: {}, cur: null, next: 0 };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } };
+const logs = []; const log = (m) => { logs.push(m); $('log').textContent = logs.slice(-14).join('\n'); };
+
+// a run that started and never finished: the tab crashed during it
+if (S.cur) { S.results[S.cur.id] = 'crash: ' + S.cur.step; S.next = CONFIGS.findIndex((c) => c[0] === S.cur.id) + 1; S.cur = null; save(); }
+
+function device() {
+  const d = { 'المتصفح': navigator.userAgent, 'الشاشة': screen.width + '×' + screen.height + ' @' + devicePixelRatio, 'الأنوية': navigator.hardwareConcurrency || '-' };
+  try {
+    const c = document.createElement('canvas'), gl = c.getContext('webgl2'), g = gl || c.getContext('webgl');
+    const x = g && g.getExtension('WEBGL_debug_renderer_info');
+    d['WebGL'] = gl ? '2' : g ? '1' : 'لا';
+    if (g) { d['GPU'] = x ? g.getParameter(x.UNMASKED_RENDERER_WEBGL) : g.getParameter(g.RENDERER); d['أقصى صورة'] = g.getParameter(g.MAX_TEXTURE_SIZE); }
+    const lose = g && g.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+  } catch (e) { d['WebGL'] = 'خطأ: ' + e.message; }
+  return d;
+}
+function table(status) {
+  const rows = Object.entries(device()).map(([k, v]) => `<tr><td>${k}</td><td class="v">${v}</td></tr>`);
+  for (const [id, label] of CONFIGS) {
+    const r = S.results[id], cls = !r ? '' : r === 'OK' ? 'ok' : r === 'running' ? 'run' : 'bad';
+    const txt = !r ? '—' : r === 'OK' ? 'اشتغل ✓' : r === 'running' ? 'شغّال الحين…' : r.startsWith('crash') ? 'طاح عند: ' + r.slice(7) : r;
+    rows.push(`<tr><td>${id} · ${label}</td><td class="v ${cls}">${txt}</td></tr>`);
+  }
+  $('tbl').innerHTML = rows.join(''); $('st').textContent = status;
+}
+$('again').onclick = () => { localStorage.removeItem(KEY); location.replace(location.pathname + '?reset=1'); };
+
+const okId = Object.keys(S.results).find((k) => S.results[k] === 'OK');
+if (okId || S.next >= CONFIGS.length) {
+  table(okId ? 'خلص الفحص ✓ صوّر هذي الشاشة وأرسلها' : 'خلص الفحص: كل الإعدادات طاحت. صوّر الشاشة وأرسلها');
+  $('again').hidden = false;
+} else {
+  const i = S.next, [id, label, opts] = CONFIGS[i];
+  S.cur = { id, step: 'load' }; S.results[id] = 'running'; save();
+  table(`يفحص الإعداد ${id}: ${label}… لا تقفل الصفحة. لو طلعت رسالة خطأ من سفاري اضغط إعادة التحميل.`);
+  const step = (name) => { S.cur.step = name; save(); log(id + ' · ' + name + ' · ' + Math.round(performance.now()) + 'ms'); };
+  try {
+    step('import');
+    const { createStage } = await import('../assets/js/hq/stage.js?v=diag1');
+    const w = innerWidth, h = innerHeight, dpr = opts.dpr || Math.min(devicePixelRatio || 1, 1.5);
+    const stage = await createStage({ canvas: $('c'), cards: [4, 8, 4, 5, 5], t: (k, a) => a, lang: 'ar', mobile: true, width: w, height: h, dpr, onStep: step, opts });
+    const view = { w, h, ox: 0, oy: h * 0.2, px: 0, py: 0, portrait: w / h < 1.2 };
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    for (const [x, name] of [[0, 'exterior'], [3, 'lobby'], [3.62, 'lift'], [6, 'floor 6'], [15, 'floor 11'], [21, 'floor 16'], [26, 'roof'], [30, 'aerial']]) {
+      step('render ' + name); stage.frame(x, view); await wait(600);
+    }
+    step('scroll sweep');
+    for (let x = 0; x <= 30; x += 0.5) { stage.frame(x, view); await new Promise((r) => requestAnimationFrame(r)); }
+    S.results[id] = 'OK'; S.cur = null; save();
+    table('خلص الفحص ✓ صوّر هذي الشاشة وأرسلها'); $('again').hidden = false;
+  } catch (e) {
+    S.results[id] = 'error: ' + (S.cur ? S.cur.step : '') + ' · ' + String(e && e.message || e).slice(0, 120); S.cur = null; S.next = i + 1; save();
+    table('صار خطأ (مو انهيار). أعد تحميل الصفحة يكمل الفحص بالإعداد اللي بعده');
+  }
+}
+</script>
+</body>
+</html>
