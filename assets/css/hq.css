@@ -3,8 +3,7 @@
    No frame: the stage runs edge to edge, the canvas is transparent and the land fades into the page colour, so the
    campus sits inside the page. A picture shows first (and stays if WebGL is missing or failed).
    ========================================================================== */
-.hq { position: relative; padding-bottom: clamp(24px, 3vw, 48px); background: var(--white); overflow: hidden; }
-.hq .section-top { margin-bottom: 0; }
+.hq { position: relative; padding-block: clamp(8px, 1.5vw, 20px) clamp(24px, 3vw, 48px); background: var(--white); overflow: hidden; }
 .hq-stage {
   position: relative; isolation: isolate; height: clamp(420px, 72vh, 820px);
   width: 100vw; margin-inline: calc(50% - 50vw); margin-top: clamp(4px, 1vw, 16px);

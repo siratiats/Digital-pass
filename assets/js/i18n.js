@@ -70,8 +70,6 @@ window.DP_I18N = {
     "about.serve": "Our services are for individuals and small and medium-sized businesses only, in Saudi Arabia and the Gulf.",
     "about.visionT": "Our vision",
     "hq.label": "The Digital Pass model",
-    "hq.title": "We build your digital solutions, floor by floor",
-    "hq.lead": "A 3D model in the Digital Pass identity: from the foundation to the roof, every floor is a step in your digital journey. Turn it and see it from every side.",
     "hq.hint": "Drag to turn the building, zoom with the buttons",
     "hq.hintTouch": "Move with one finger, pinch to zoom",
     "hq.zoomIn": "Zoom in",
