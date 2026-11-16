@@ -43,7 +43,7 @@ export async function createModel({ canvas, mobile, width, height, dpr, lang = '
   brandGeo.logoLight = logoGeometry(brand, { cap: 1, depth: 0.12, light: true }); brandGeo.symbol = symbolGeometry(brand, { height: 1, depth: 0.045 });
   await tick();
   onStep('site');
-  const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048, reach: 1250 });
+  const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048, reach: 1250, glass: true });
   scene.add(site.group);
   await tick();
 
@@ -59,18 +59,22 @@ export async function createModel({ canvas, mobile, width, height, dpr, lang = '
   onStep('ready');
 
   let w = width, h = height, first = true;
-  /* az: angle around the model (0 = looking at the entrance side), polar: angle from straight above */
-  function render(az, polar, zoom = 1) {
+  /* az: angle around the tower (0 = looking at the entrance side), polar: angle from straight above,
+     zoom: distance factor (1 = whole tower in view), pan: { x, z } shift of the point the camera circles */
+  function render(az, polar, zoom = 1, pan = null) {
     camera.aspect = w / h;
     const vf = THREE.MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
-    const d = (R * (camera.aspect > 1.2 ? 1.12 : 1)) / Math.sin(Math.min(vf, hf) / 2) * zoom;     // tower and antenna stay in view at any angle
-    camera.position.set(target.x + d * Math.sin(polar) * Math.sin(az), target.y + d * Math.cos(polar), target.z + d * Math.sin(polar) * Math.cos(az));
-    camera.lookAt(target);
-    camera.near = Math.max(2, d * 0.15);
+    const d = (R * (camera.aspect > 1.2 ? 1.12 : 1)) / Math.sin(Math.min(vf, hf) / 2) * zoom;
+    const tx = target.x + (pan ? pan.x : 0), tz = target.z + (pan ? pan.z : 0);
+    camera.position.set(tx + d * Math.sin(polar) * Math.sin(az), target.y + d * Math.cos(polar), tz + d * Math.sin(polar) * Math.cos(az));
+    camera.lookAt(tx, target.y, tz);
+    camera.near = Math.max(1.5, d * 0.08);
+    scene.fog.near = d + 60; scene.fog.far = d + 1000;                                // the mist keeps its distance from the camera
     camera.updateProjectionMatrix();
     if (first) onStep('first render');
     renderer.render(scene, camera);
     if (first) { first = false; onStep('first render done'); }
+    return d;
   }
   return {
     renderer, scene, render,
