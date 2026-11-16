@@ -17,13 +17,17 @@ export function rng(seed = 1) {
 }
 
 /* ---------- canvas textures ---------- */
-let ANISO = 4;
+let ANISO = 4, TEX_SCALE = 1;
 export const setAniso = (a) => { ANISO = a; };
+/* phones: canvases are drawn at a smaller pixel size (same drawing, scaled), which roughly halves texture memory */
+export const setTexScale = (s) => { TEX_SCALE = s; };
 
-export function canvasTex(w, h, draw, { srgb = true, aniso, repeat = true } = {}) {
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  draw(c.getContext('2d'), w, h);
+export function canvasTex(w, h, draw, { srgb = true, aniso, repeat = true, scale } = {}) {
+  const s = scale ?? TEX_SCALE, c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s));
+  const g = c.getContext('2d');
+  if (c.width !== w || c.height !== h) g.scale(c.width / w, c.height / h);
+  draw(g, w, h);
   const t = new THREE.CanvasTexture(c);
   if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
@@ -40,10 +44,14 @@ export function langTex(w, h, draw, opts) {
   langTextures.push({ t, draw, w, h });
   return t;
 }
+/* after upload, canvases whose text never changes are shrunk to 1px so their memory is given back */
+export function releaseCanvas(t) {
+  if (!langTextures.some((e) => e.t === t) && t.image && t.image.getContext) { t.image.width = 1; t.image.height = 1; }
+}
 export function redrawText() {
   for (const e of langTextures) {
-    const g = e.t.image.getContext('2d');
-    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, e.w, e.h);
+    const c = e.t.image, g = c.getContext('2d');
+    g.setTransform(c.width / e.w, 0, 0, c.height / e.h, 0, 0); g.clearRect(0, 0, e.w, e.h);
     g.direction = 'ltr'; g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.globalAlpha = 1; g.shadowBlur = 0;
     e.draw(g, e.w, e.h, LANG);
     e.t.needsUpdate = true;
@@ -229,12 +237,13 @@ async function cloudSkyCanvas(sun, { stops, seed, W, H, cover, glow }) {
   }
   return c;
 }
-export async function makeSky(scene, renderer, { elevation = 45, azimuth = -55, stops, W = 2048, cover = 0.3, glow = 0.18, seed = 7 } = {}) {
+export async function makeSky(scene, renderer, { elevation = 45, azimuth = -55, stops, W = 2048, cover = 0.3, glow = 0.18, seed = 7, env = true } = {}) {
   const sun = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - elevation), THREE.MathUtils.degToRad(azimuth));
   const tex = new THREE.CanvasTexture(await cloudSkyCanvas(sun, { stops, seed, W, H: W / 2, cover, glow }));
   await new Promise((r) => setTimeout(r, 0));
   tex.colorSpace = THREE.SRGBColorSpace; tex.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = tex;
+  if (!env) return sun;
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromEquirectangular(tex).texture;
   pmrem.dispose();
@@ -275,6 +284,13 @@ export const M = {
 
 /* ---------- batching: thousands of parts in a handful of draw calls (one InstancedMesh per geometry + material) ---------- */
 const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _c = new THREE.Color();
+/* clip rectangle (a model on a plinth): instances whose origin falls outside are dropped, large axis-aligned ground
+   boxes and planes are trimmed to it, and quads are trimmed or dropped. null = no clipping. */
+let CLIP = null;
+export const setClip = (c) => { CLIP = c; };
+export const getClip = () => CLIP;
+const inClip = (x, z, m = 0) => !CLIP || (x >= CLIP.x0 - m && x <= CLIP.x1 + m && z >= CLIP.z0 - m && z <= CLIP.z1 + m);
+
 export function makeKit({ cast = true, receive = true } = {}) {
   const batches = new Map();
   const stack = [new THREE.Matrix4()];
@@ -291,12 +307,29 @@ export function makeKit({ cast = true, receive = true } = {}) {
       let b = batches.get(key);
       if (!b) { b = { g, mat, mats: [], cols: [], c, r, tint: false }; batches.set(key, b); }
       _m4.compose(_p.set(x, y, z), _q.setFromEuler(_e.set(o.rx || 0, o.ry || 0, o.rz || 0, 'XYZ')), _s.set(o.sx ?? 1, o.sy ?? 1, o.sz ?? 1));
-      b.mats.push(stack[stack.length - 1].clone().multiply(_m4));
+      const M = stack[stack.length - 1].clone().multiply(_m4);
+      if (CLIP && !inClip(M.elements[12], M.elements[14], 1)) return;
+      b.mats.push(M);
       b.cols.push(o.color ?? 0xffffff); if (o.color !== undefined) b.tint = true;
     },
-    box(w, h, d, mat, x, y, z, o = {}) { kit.add(G.box(), mat, x, y, z, { ...o, sx: w, sy: h, sz: d }); },
+    box(w, h, d, mat, x, y, z, o = {}) {
+      if (CLIP && stack.length === 1 && !o.rx && !o.ry && !o.rz && (w > 12 || d > 12)) {   // big ground slabs: trim to the plinth
+        const x0 = Math.max(x - w / 2, CLIP.x0), x1 = Math.min(x + w / 2, CLIP.x1), z0 = Math.max(z - d / 2, CLIP.z0), z1 = Math.min(z + d / 2, CLIP.z1);
+        if (x1 <= x0 || z1 <= z0) return;
+        w = x1 - x0; d = z1 - z0; x = (x0 + x1) / 2; z = (z0 + z1) / 2;
+        return kit.add(G.box(), mat, x, y, z, { ...o, sx: w, sy: h, sz: d });   // origin is inside now
+      }
+      kit.add(G.box(), mat, x, y, z, { ...o, sx: w, sy: h, sz: d });
+    },
     cyl(r, h, mat, x, y, z, o = {}) { kit.add(o.low ? G.cyl8() : G.cyl(), mat, x, y, z, { ...o, sx: r, sy: h, sz: o.r2 ?? r }); },
-    plane(w, h, mat, x, y, z, o = {}) { kit.add(G.plane(), mat, x, y, z, { ...o, sx: w, sy: h }); },   // faces +z; rx -PI/2 = facing up
+    plane(w, h, mat, x, y, z, o = {}) {   // faces +z; rx -PI/2 = facing up
+      if (CLIP && stack.length === 1 && o.rx === -Math.PI / 2 && !o.ry && (w > 12 || h > 12)) {
+        const x0 = Math.max(x - w / 2, CLIP.x0), x1 = Math.min(x + w / 2, CLIP.x1), z0 = Math.max(z - h / 2, CLIP.z0), z1 = Math.min(z + h / 2, CLIP.z1);
+        if (x1 <= x0 || z1 <= z0) return;
+        w = x1 - x0; h = z1 - z0; x = (x0 + x1) / 2; z = (z0 + z1) / 2;
+      }
+      kit.add(G.plane(), mat, x, y, z, { ...o, sx: w, sy: h });
+    },
     build(parent) {
       const out = [];
       for (const b of batches.values()) {
@@ -327,11 +360,21 @@ export function quadBatch() {
   return {
     /* vertical wall from (x0,z0) to (x1,z1), seen from its right-hand side: u runs along the wall, v up */
     wall(x0, z0, x1, z1, y0, y1, u0, v0, u1, v1) {
+      if (CLIP && !inClip((x0 + x1) / 2, (z0 + z1) / 2, 1)) return;
       const dx = x1 - x0, dz = z1 - z0, l = Math.hypot(dx, dz);
       quad([x0, y0, z0], [x1, y0, z1], [x1, y1, z1], [x0, y1, z0], [-dz / l, 0, dx / l], u0, v0, u1, v1);
     },
     /* horizontal rectangle facing up; alongZ: the texture's u axis runs along z */
     flat(x0, z0, x1, z1, y, u0, v0, u1, v1, alongZ = false) {
+      if (CLIP) {   // trim to the plinth, keeping the texture where it was
+        const cx0 = Math.max(x0, CLIP.x0), cx1 = Math.min(x1, CLIP.x1), cz0 = Math.max(z0, CLIP.z0), cz1 = Math.min(z1, CLIP.z1);
+        if (cx1 <= cx0 || cz1 <= cz0) return;
+        const fx = (v) => (v - x0) / (x1 - x0), fz = (v) => (v - z0) / (z1 - z0);
+        const [a0, a1, b0, b1] = alongZ ? [fz(cz0), fz(cz1), fx(cx0), fx(cx1)] : [fx(cx0), fx(cx1), fz(cz0), fz(cz1)];
+        const du = u1 - u0, dv = v1 - v0;
+        [u0, u1, v0, v1] = [u0 + du * a0, u0 + du * a1, v0 + dv * b0, v0 + dv * b1];
+        x0 = cx0; x1 = cx1; z0 = cz0; z1 = cz1;
+      }
       quad([x0, y, z1], [x1, y, z1], [x1, y, z0], [x0, y, z0], [0, 1, 0], u0, v0, u1, v1, alongZ);
     },
     /* horizontal rectangle facing down (ceilings) */
