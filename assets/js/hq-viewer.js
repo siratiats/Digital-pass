@@ -160,7 +160,7 @@ function init() {
     try {
       size();
       dpr = +params.get('dpr') || Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75);
-      const { createModel } = await import('./hq/model.js?v=m5');
+      const { createModel } = await import('./hq/model.js?v=m6');
       model = await createModel({ canvas, mobile, width: w, height: h, dpr, lang: lang(), onStep: (x) => dbg('model ' + x) });
       canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); dbg('CONTEXT LOST'); fail(); });
       s.d = model.render(s.az, s.pol, s.zoom, { x: s.px, z: s.pz }) || s.d;
@@ -184,5 +184,9 @@ function init() {
     if (document.hidden) { guard(false); } else { if (model || loading) guard(true); dirty = true; kick(); }
   });
   new MutationObserver(() => { if (model) { model.setLang(lang()); dirty = true; kick(); } }).observe(root, { attributes: true, attributeFilter: ['lang'] });
-  window.__hq = { state: s, get ready() { return !!model; }, get engaged() { return engaged; }, info: () => model && { ...model.renderer.info.render, textures: model.renderer.info.memory.textures, geometries: model.renderer.info.memory.geometries } };
+  window.__hq = {   // tests and screenshots
+    state: s, get ready() { return !!model; }, get engaged() { return engaged; },
+    view: (az, pol, zoom = 1, px = 0, pz = 0) => { Object.assign(s, { az, pol, zoom, px, pz, goal: null, vAz: 0, vPol: 0, lastInput: performance.now() + 1e9 }); dirty = true; kick(); },
+    info: () => model && { ...model.renderer.info.render, textures: model.renderer.info.memory.textures, geometries: model.renderer.info.memory.geometries }
+  };
 }

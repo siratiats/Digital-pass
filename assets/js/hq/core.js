@@ -405,7 +405,10 @@ const PG = {
   arm: () => geo('p-arm', () => new THREE.CylinderGeometry(0.052, 0.045, 0.62, 6).translate(0, -0.31, 0)),
   head: () => geo('p-head', () => new THREE.SphereGeometry(0.115, 10, 8))
 };
+let PEOPLE = true;
+export const setPeople = (v) => { PEOPLE = v; };   // the model on the homepage has no people
 export function addPerson(K, x, y, z, seed, { ry, walk } = {}) {
+  if (!PEOPLE) return;
   const R = rng(seed * 7919 + 13);
   const pick = (a) => a[Math.floor(R() * a.length)];
   const top = pick(TOPS), pants = pick(PANTS), skin = pick(SKIN);

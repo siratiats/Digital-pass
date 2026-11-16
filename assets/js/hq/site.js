@@ -365,7 +365,7 @@ function campus(K, F, D, group, R, keepClear) {
 }
 
 /* ---------- the headquarters ---------- */
-function tower(K, KL, F, group, T, R) {
+function tower(K, KL, F, group, T, R, solid = false) {
   const { TW, TD, topY, fascia: fb } = HQ, S = HQ.spine, L = HQ.lift;
   floorsBlock(K, F, R, { w: TW, d: TD, floors: 20, y0: 8, cut: [S.x0, S.x1] });
 
@@ -467,6 +467,24 @@ function tower(K, KL, F, group, T, R) {
   const ps = 0.42; K.add(T.logoLight, M.logo, ex0 - T.logoLight.userData.width * ps / 2, 8.25 - T.logoLight.userData.height * ps / 2, TD / 2 + 2.01, { sx: ps, sy: ps, sz: ps });
   mb(K, 16, 0.45, 6, C.white, ex0, 6.2, TD / 2 + 3.6); lb(K, 14, 0.06, 0.25, C.led, ex0, 5.95, TD / 2 + 6.2);
   for (let k = 0; k < 4; k++) K.add(G.disc(), M.glow, ex0 - 5.4 + k * 3.6, 5.96, TD / 2 + 3.6, { rx: Math.PI / 2, sx: 0.22, sy: 0.22, color: 0xfff4dc, cast: false, receive: false });
+
+  // ---- solid (the model seen from outside, from every side): fill what the tour left hollow for its interiors ----
+  if (solid) {
+    const box = (x0, x1, y0, y1, z0, z1, mat) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), mat);
+      m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2); m.receiveShadow = true; group.add(m);
+    };
+    // the body behind the glass, closed at the roof
+    box(-TW / 2 + 1, TW / 2 - 1, fb, HQ.deckY - 0.03, -TD / 2 + 1, TD / 2 - 1, std({ color: 0x9aa7b4, roughness: 0.6 }));   // behind the glass (0.6 in)
+    // the ground floor reads as a tinted glass base on all four sides, framed like the front
+    const lg = std({ color: 0x86a2bd, roughness: 0.08, metalness: 0.6, envMapIntensity: 1.3 });
+    box(lx0 + 0.02, lx1 - 0.1, 0.07, fb, lz0 + 0.02, lz1 - 0.1, lg); box(ax0 + 0.1, lx1 - 0.1, 0.07, fb, lz1 - 0.12, az - 0.02, lg);
+    for (let k = 0; k <= 10; k++) fr(0.14, fb, 0.22, lx0 + k * (lx1 - lx0) / 10, fb / 2, lz0 - 0.06);
+    for (let k = 0; k <= 8; k++) fr(0.22, fb, 0.14, lx0 - 0.06, fb / 2, lz0 + k * (lz1 - lz0) / 8);
+    for (const y of [3.05, fb - 0.1]) { fr(lx1 - lx0, 0.14, 0.22, lcx, y, lz0 - 0.06); fr(0.22, 0.14, lz1 - lz0, lx0 - 0.06, y, lcz); }
+    // the lift spine is a closed blue volume (seen from behind above the roof, too)
+    box(S.x0 + 0.04, S.x1 - 0.04, 0, sh - 0.04, S.z0 + 0.04, S.z1 - 0.04, std({ color: C.blue, roughness: 0.85 }));
+  }
   return leaves;
 }
 
@@ -525,14 +543,14 @@ function forecourt(K, group, T, R) {
 /* built in a few steps, yielding to the page in between so scrolling never stalls while the HQ is put together */
 /* plot: { x0, x1, z0, z1 } turns the campus into an architectural model on a plinth: no terrain, everything trimmed
    to the rectangle, a white base with a navy band and the logo on its front edge. */
-export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null, reach = 0, glass = false }) {
+export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null, reach = 0, glass = false, solid = false }) {
   const group = new THREE.Group(), R = rng(9), step = () => new Promise((r) => setTimeout(r, 0));
   const K = makeKit(), KL = makeKit({ cast: false, receive: false }), F = quadBatch(), D = quadBatch();
   if (plot) { setClip(plot); plinth(group, brandGeo, plot); }
   else { if (reach) setClip({ r: reach }); terrain(group, reach); }   // reach: nothing beyond it is built (it would be lost in the mist)
   await step();
   campus(K, F, D, group, R, keepClear); await step();
-  const leaves = tower(K, KL, F, group, brandGeo, rng(5)); await step();
+  const leaves = tower(K, KL, F, group, brandGeo, rng(5), solid); await step();
   wing(K, KL, F, group, rng(100));
   forecourt(K, group, brandGeo, rng(3)); await step();
   K.build(group); KL.build(group); await step();

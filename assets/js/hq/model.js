@@ -1,7 +1,7 @@
 /* Digital Pass HQ in its campus (the same ground as the tour: streets, trees, low buildings, hills), with no edges:
    the land fades into the page colour with distance and the canvas is transparent, so the scene sits inside the page.
    The camera orbits the tower; lights and shadows stay fixed, so the shadow map is drawn once. */
-import { THREE, setAniso, setTexScale, releaseCanvas, setLang, redrawText, loadBrand, logoGeometry, symbolGeometry, makeSky } from './core.js';
+import { THREE, setAniso, setTexScale, releaseCanvas, setLang, redrawText, loadBrand, logoGeometry, symbolGeometry, makeSky, setPeople } from './core.js';
 import { buildSite } from './site.js';
 
 const SKY = [[-90, '#d6dadd'], [-2, '#e4e7ea'], [0, '#f2f5f8'], [5, '#e9f0f7'], [15, '#d6e5f3'], [35, '#bcd5ef'], [65, '#a3c4ea'], [90, '#97bce7']];
@@ -43,7 +43,8 @@ export async function createModel({ canvas, mobile, width, height, dpr, lang = '
   brandGeo.logoLight = logoGeometry(brand, { cap: 1, depth: 0.12, light: true }); brandGeo.symbol = symbolGeometry(brand, { height: 1, depth: 0.045 });
   await tick();
   onStep('site');
-  const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048, reach: 1250, glass: true });
+  setPeople(false);
+  const site = await buildSite({ brandGeo, windowSize: mobile ? 1024 : 2048, reach: 1250, glass: true, solid: true });
   scene.add(site.group);
   await tick();
 
@@ -65,11 +66,11 @@ export async function createModel({ canvas, mobile, width, height, dpr, lang = '
     camera.aspect = w / h;
     const vf = THREE.MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
     const d = (R * (camera.aspect > 1.2 ? 1.12 : 1)) / Math.sin(Math.min(vf, hf) / 2) * zoom;
-    const tx = target.x + (pan ? pan.x : 0), tz = target.z + (pan ? pan.z : 0);
-    camera.position.set(tx + d * Math.sin(polar) * Math.sin(az), target.y + d * Math.cos(polar), tz + d * Math.sin(polar) * Math.cos(az));
-    camera.lookAt(tx, target.y, tz);
+    const tx = target.x + (pan ? pan.x : 0), tz = target.z + (pan ? pan.z : 0), ty = target.y + Math.max(0, 1 - zoom) * 22;   // close up: aim a little higher, the whole tower stays in the frame
+    camera.position.set(tx + d * Math.sin(polar) * Math.sin(az), ty + d * Math.cos(polar), tz + d * Math.sin(polar) * Math.cos(az));
+    camera.lookAt(tx, ty, tz);
     camera.near = Math.max(1.5, d * 0.08);
-    scene.fog.near = d + 60; scene.fog.far = d + 1000;                                // the mist keeps its distance from the camera
+    scene.fog.near = d + 40; scene.fog.far = d + 650;                                // the mist keeps its distance from the camera
     camera.updateProjectionMatrix();
     if (first) onStep('first render');
     renderer.render(scene, camera);
