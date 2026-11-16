@@ -20,6 +20,30 @@ const mobileQ = () => matchMedia('(pointer: coarse)').matches || innerWidth < 90
 const isPortrait = () => (innerWidth < 900 ? innerWidth / innerHeight < 1.2 : innerWidth / innerHeight < 0.9);
 const headerH = () => parseFloat(getComputedStyle(root).getPropertyValue('--header-h')) || 80;
 
+/* ?debug: a step log kept in localStorage and shown on screen, including the previous visit's log, so a crash on a
+   phone can be located (did it die while loading, building the HQ, or at a given stop of the tour?) */
+const DBG = params.has('debug'), DKEY = 'dp-dbg';
+let dlog = [], dbox = null, dended = false;
+const dbg = (m) => {
+  if (!DBG) return;
+  dlog.push((performance.now() / 1000).toFixed(1) + 's ' + m); if (dlog.length > 40) dlog.splice(0, dlog.length - 40);
+  try { localStorage.setItem(DKEY, JSON.stringify({ end: dended, log: dlog })); } catch (e) { /* storage blocked */ }
+  if (dbox) dbox.lastChild.textContent = dlog.slice(-6).join('\n');
+};
+if (DBG) {
+  let prev = null; try { prev = JSON.parse(localStorage.getItem(DKEY)); } catch (e) { /* ignore */ }
+  dbox = document.createElement('div');
+  dbox.setAttribute('style', 'position:fixed;z-index:9999;left:6px;right:6px;top:calc(var(--header-h,64px) + 6px);max-height:46vh;overflow:auto;padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.82);color:#cfe;font:11px/1.35 ui-monospace,Menlo,monospace;direction:ltr;text-align:left;white-space:pre-wrap;pointer-events:none');
+  const head = prev ? 'PREVIOUS VISIT: ' + (prev.end ? 'ended normally' : 'CUT OFF (crash?)') + '\n' + (prev.log || []).slice(-14).join('\n') + '\n\nTHIS VISIT:' : 'THIS VISIT:';
+  dbox.append(document.createTextNode(head + '\n'), document.createTextNode(''));
+  document.body.append(dbox);
+  addEventListener('pagehide', () => { dended = true; dbg('left the page'); });
+  addEventListener('pageshow', (e) => { if (e.persisted) { dended = false; dbg('back (from cache)'); } });
+  addEventListener('error', (e) => dbg('ERROR ' + (e.message || e.type)));
+  addEventListener('unhandledrejection', (e) => dbg('REJECT ' + String(e.reason && e.reason.message || e.reason).slice(0, 80)));
+  dbg('load ' + innerWidth + 'x' + innerHeight + ' @' + devicePixelRatio + ' j3d=' + root.classList.contains('j3d'));
+}
+
 const state = { ready: false, p: 0, pT: 0, idx: 0, s: 0, live: false, frames: 0 };
 window.__dp = state;
 let N = 0, starts = [], counts = [], lastCards = [], cardIdx = [], stopH = 500, vw = innerWidth, vh = innerHeight;
@@ -36,7 +60,11 @@ const journeyTop = () => journey.getBoundingClientRect().top + scrollY;
 state.scrollForIdx = (i) => Math.round(journeyTop() + i * stopH);
 state.jump = () => { update(); state.p = state.pT; dirty = true; kick(); };   // settle on the current stop at once (focus moves, tests)
 function webglOK() {
-  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
+  try {
+    const c = document.createElement('canvas'), g = c.getContext('webgl2') || c.getContext('webgl');
+    const lose = g && g.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();   // give the probe context back at once
+    return !!g;
+  } catch (e) { return false; }
 }
 /* text drawn on the signs and screens: Arabic from the caller, English from the site's dictionary */
 const t = (key, ar) => (curLang === 'en' ? String(EN()[key] || ar).replace(/<br\s*\/?>/g, ' ').replace(/<[^>]+>/g, '') : ar);
@@ -79,7 +107,7 @@ secs.forEach((s, i) => {
 function update() {
   const r = journey.getBoundingClientRect();
   const live = r.top < vh * 0.98 && r.bottom > vh * 0.3;           // below 0.45vh the last view has already faded out
-  if (live !== state.live) { state.live = live; hud.classList.toggle('is-live', live); }
+  if (live !== state.live) { state.live = live; hud.classList.toggle('is-live', live); dbg('live ' + live); }
   const pinned = live && r.top < vh * 0.3 && r.bottom > vh * 0.6;
   if (pinned !== state.pinned) { state.pinned = pinned; hud.classList.toggle('is-pinned', pinned); }
   if (!is3d()) return;
@@ -140,6 +168,7 @@ function render() {
   const idx = state.p; state.idx = idx;
   // during a lift ride there is no card: centre the view
   let w = 0; for (let i = 0; i < lastCards.length - 1; i++) { const a = lastCards[i]; w = Math.max(w, smooth(a + 0.3, a + 0.62, idx) * (1 - smooth(a + 1.4, a + 1.75, idx))); }
+  const st = Math.round(idx); if (st !== state.lastStop) { state.lastStop = st; dbg('stop ' + st + (state.frames ? '' : ' (first frame)')); }
   const y = stage.frame(idx, { w: vw, h: vh, ox: view.ox * (1 - w), oy: view.oy * (1 - w), px: pointer.sx, py: pointer.sy, portrait: view.portrait });
   const fl = Math.round((y - 1.62) / 4), code = fl < 1 ? 'G' : fl >= 23 ? 'R' : String(fl).padStart(2, '0');
   if (code !== floorShown) { floorShown = code; liftNum.textContent = code; }
@@ -148,18 +177,18 @@ function render() {
 /* ------------------------------------------------------------------ the WebGL stage (lazy) */
 async function boot3d() {
   if (stage || loading || !is3d()) return;
-  loading = true; hud.classList.add('is-loading'); guard(true);
+  loading = true; hud.classList.add('is-loading'); guard(true); dbg('boot');
   try {
     const mobile = mobileQ();
     dpr = +params.get('dpr') || Math.min(window.devicePixelRatio || 1, 1.5);
     const { createStage } = await import('./hq/stage.js?v=hq1');
-    stage = await createStage({ canvas, cards: cardsBySec.map((c) => c.length), t, lang: curLang, mobile, width: vw, height: vh, dpr, onChange: () => { dirty = true; kick(); } });
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); fail(new Error('WebGL context lost')); });
+    stage = await createStage({ canvas, cards: cardsBySec.map((c) => c.length), t, lang: curLang, mobile, width: vw, height: vh, dpr, onChange: () => { dirty = true; kick(); }, onStep: (s) => dbg('stage ' + s) });
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); dbg('CONTEXT LOST'); fail(new Error('WebGL context lost')); });
     state.ready = true; loading = false;
     hud.classList.remove('is-loading'); hud.classList.add('is-ready');
     state.p = state.pT; dirty = true; update(); kick();
   } catch (err) {
-    loading = false; console.error('[journey] 3D stage failed, showing the static layout', err); fail(err);
+    loading = false; dbg('FAIL ' + String(err && err.message || err).slice(0, 80)); console.error('[journey] 3D stage failed, showing the static layout', err); fail(err);
   }
 }
 function fail() {
@@ -219,9 +248,9 @@ journey.addEventListener('focusin', (e) => {
   if (Math.abs(scrollY - top) > 4) { instantScroll(top); state.jump(); }
 });
 addEventListener('scroll', update, { passive: true });
-addEventListener('resize', () => { layout(); applyView(); if (stage) stage.resize(vw, vh, dpr); update(); dirty = true; kick(); });
+addEventListener('resize', () => { dbg('resize ' + innerWidth + 'x' + innerHeight); layout(); applyView(); if (stage) stage.resize(vw, vh, dpr); update(); dirty = true; kick(); });
 addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; pointer.x = e.clientX / vw * 2 - 1; pointer.y = e.clientY / vh * 2 - 1; if (state.live && stage) kick(); }, { passive: true });
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { dirty = true; kick(); } });
+document.addEventListener('visibilitychange', () => { dbg(document.hidden ? 'hidden' : 'visible'); if (!document.hidden) { dirty = true; kick(); } });
 new MutationObserver(() => {
   if (lang() === curLang) return;
   curLang = lang(); updateLiteBtn(); applyView();

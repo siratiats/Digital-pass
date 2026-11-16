@@ -128,6 +128,7 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
     floors.sets.forEach((g) => { g.visible = false; });
   }
   onStep('ready');
+  let firstFrame = true;
   renderer.shadowMap.needsUpdate = true;
   if (!fontsReady) fontsLoad.then(() => { redrawText(); if (onChange) onChange(); });
 
@@ -160,7 +161,9 @@ export async function createStage({ canvas, cards, t, lang, mobile, width, heigh
     camera.fov = fov + Math.min(16, Math.max(0, (1 - camera.aspect) * 30));
     camera.near = clamp(Math.hypot(x, z) / 70, 0.25, 3);
     camera.setViewOffset(view.w, view.h, view.ox, view.oy, view.w, view.h);              // also updates the projection
+    if (firstFrame) onStep('first render');
     renderer.render(scene, camera);
+    if (firstFrame) { firstFrame = false; onStep('first render done'); }
     return y;                                                                            // eye height: the HUD shows the floor
   }
 

@@ -210,6 +210,12 @@ html.j3d .jload { display: flex; }
   .jload { top: auto; bottom: 12px; }
 }
 
+/* touch devices: no backdrop blur over the WebGL canvas (Safari re-blurs it on every frame); the glass is opaque enough */
+@media (pointer: coarse) {
+  html.j3d .jc.on .jc-in, .jlift, .jlite-btn, .jscroll, .jr-label { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  html.j3d .jc-in { background: linear-gradient(160deg, rgba(14,34,82,.96), rgba(7,17,42,.94)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .jc, .jc-in, .jc-in > *, .jlift { transition-duration: .01ms !important; transition-delay: 0s !important; }
   .jscroll i, .jload i { animation: none; }
