@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Digital Pass — the 3D model section (between the hero and "about")
+   Digital Pass — the 3D model (in "about", under the statement)
    No frame: the stage runs edge to edge, the canvas is transparent and the land fades into the page colour, so the
    campus sits inside the page. A picture shows first (and stays if WebGL is missing or failed).
    ========================================================================== */
-.hq { position: relative; padding-block: clamp(8px, 1.5vw, 20px) clamp(24px, 3vw, 48px); background: var(--white); overflow: hidden; }
+.about { overflow-x: hidden; overflow-x: clip; }   /* the model sits in "about" under the statement; its stage is wider than the container */
 .hq-stage {
   position: relative; isolation: isolate; height: clamp(420px, 72vh, 820px);
-  width: 100vw; margin-inline: calc(50% - 50vw); margin-top: clamp(4px, 1vw, 16px);
+  width: 100vw; margin-inline: calc(50% - 50vw); margin-block: clamp(12px, 2vw, 28px) clamp(8px, 1.5vw, 20px);
 }
 .hq-fade { /* the near ground melts into the next section (the far ground fades in the mist, so the top needs no veil
    that would wash out a zoomed-in tower) */
