@@ -21,6 +21,29 @@ export const lb = (K, w, h, d, col, x, y, z) => K.box(w, h, d, M.glow, x, y, z, 
 const ground = (level, o) => geo('ground' + level + (o.map ? o.map.uuid : ''), () => std({ roughness: 0.9, polygonOffset: true, polygonOffsetFactor: -level, polygonOffsetUnits: -level * 2, ...o }));
 
 /* ---------- window grid: 12 bays x 8 floors with readable rooms, plus a matching emissive map ---------- */
+/* glass: natural reflective glass panes (cool blue-grey, sky reflections, no lit interiors) instead of offices */
+function glassMaterial(W) {
+  const R = rng(17), cols = 12, rows = 8, cw = 2048 / cols, ch = 1536 / rows, top = 0.2, F = 8, k = W / 2048;
+  const map = canvasTex(W, W * 0.75, (g) => {
+    g.scale(k, k); g.fillStyle = '#4a5562'; g.fillRect(0, 0, 2048, 1536);        // frame and spandrels
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const x = c * cw, y = r * ch, gy = y + ch * top, gh = ch * (1 - top), px = x + F, pw = cw - 2 * F, py = gy + 3, ph = gh - F - 2;
+      const t = R() * 0.12 - 0.06, gr = g.createLinearGradient(0, py, 0, py + ph);   // sky above, ground below, a touch of tone per pane
+      const mix = (a, b) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * (0.5 + t))).join(',')})`;
+      gr.addColorStop(0, mix([150, 182, 210], [176, 202, 226])); gr.addColorStop(0.45, mix([102, 132, 160], [122, 152, 178])); gr.addColorStop(1, mix([62, 84, 104], [78, 100, 120]));
+      g.fillStyle = gr; g.fillRect(px, py, pw, ph);
+      if (R() < 0.5) {                                                                 // a diagonal sheen on some panes
+        g.save(); g.beginPath(); g.rect(px, py, pw, ph); g.clip(); g.fillStyle = 'rgba(255,255,255,0.13)';
+        const sx = px - ph * 0.6 + R() * 1.6 * (pw + ph * 0.6);
+        g.beginPath(); g.moveTo(sx, py + ph); g.lineTo(sx + 34, py + ph); g.lineTo(sx + 34 + ph * 0.6, py); g.lineTo(sx + ph * 0.6, py); g.fill(); g.restore();
+      }
+      g.fillStyle = 'rgba(20,30,40,0.18)'; g.fillRect(px, py + ph * 0.84, pw, ph * 0.16);   // sill shadow
+      g.fillStyle = '#3c4652'; g.fillRect(x + cw / 2 - 2.5, gy, 5, gh); g.fillRect(px, py + ph * 0.84, pw, 4);   // mullion, transom
+      g.fillStyle = 'rgba(255,255,255,0.22)'; g.fillRect(px, py, pw, 2);
+    }
+  }, { aniso: 8, scale: 1 });
+  return std({ map, color: 0xffffff, roughness: 0.1, metalness: 0.55, envMapIntensity: 1.25 });
+}
 function windowMaterial(W) {
   const R = rng(11), cols = 12, rows = 8, cw = 2048 / cols, ch = 1536 / rows, top = 0.2, F = 8, k = W / 2048;
   const cells = [];
@@ -502,7 +525,7 @@ function forecourt(K, group, T, R) {
 /* built in a few steps, yielding to the page in between so scrolling never stalls while the HQ is put together */
 /* plot: { x0, x1, z0, z1 } turns the campus into an architectural model on a plinth: no terrain, everything trimmed
    to the rectangle, a white base with a navy band and the logo on its front edge. */
-export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null, reach = 0 }) {
+export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null, reach = 0, glass = false }) {
   const group = new THREE.Group(), R = rng(9), step = () => new Promise((r) => setTimeout(r, 0));
   const K = makeKit(), KL = makeKit({ cast: false, receive: false }), F = quadBatch(), D = quadBatch();
   if (plot) { setClip(plot); plinth(group, brandGeo, plot); }
@@ -513,7 +536,7 @@ export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], p
   wing(K, KL, F, group, rng(100));
   forecourt(K, group, brandGeo, rng(3)); await step();
   K.build(group); KL.build(group); await step();
-  const win = new THREE.Mesh(F.build(), windowMaterial(windowSize)); win.receiveShadow = true; group.add(win);
+  const win = new THREE.Mesh(F.build(), glass ? glassMaterial(windowSize) : windowMaterial(windowSize)); win.receiveShadow = true; group.add(win);
   const rt = roadTex();
   const roads = new THREE.Mesh(D.build(), ground(2, { map: rt })); roads.receiveShadow = true; group.add(roads);
   setClip(null);

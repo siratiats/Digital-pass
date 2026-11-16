@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=20261111d">
-  <link rel="stylesheet" href="assets/css/hq.css?v=m3">
+  <link rel="stylesheet" href="assets/css/hq.css?v=m5">
   <script>document.documentElement.classList.add('js');</script>
 
   <!-- Structured data for search engines. If the phone number changes, update it here too (and in assets/js/config.js). -->
@@ -286,8 +286,15 @@
       </div>
       <div class="hq-stage reveal" data-hq>
         <div class="hq-fade" aria-hidden="true"></div>
-        <canvas class="hq-canvas" tabindex="0" role="img" aria-label="مجسّم ثلاثي الأبعاد لمبنى Digital Pass، اسحبه أو استخدم الأسهم لتدويره" data-i18n-aria="hq.aria"></canvas>
-        <p class="hq-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"/></svg><span data-i18n="hq.hint">اسحب لتدوير المبنى</span></p>
+        <canvas class="hq-canvas" tabindex="0" role="img" aria-label="مجسّم ثلاثي الأبعاد لمبنى Digital Pass: اسحبه لتدويره، والأسهم للتدوير، و+ و− للتقريب والتبعيد" data-i18n-aria="hq.aria"></canvas>
+        <div class="hq-scroll hq-scroll--top" aria-hidden="true"></div>
+        <div class="hq-scroll hq-scroll--bottom" aria-hidden="true"></div>
+        <p class="hq-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18"/></svg><span class="t-mouse" data-i18n="hq.hint">اسحب لتدوير المبنى، وقرّب بالأزرار</span><span class="t-touch" data-i18n="hq.hintTouch">حرّك بإصبع، وقرّب بإصبعين</span></p>
+        <div class="hq-tools">
+          <button type="button" class="hq-btn" data-hq-zoom="in" aria-label="تقريب" data-i18n-aria="hq.zoomIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" class="hq-btn" data-hq-zoom="out" aria-label="تبعيد" data-i18n-aria="hq.zoomOut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button type="button" class="hq-btn" data-hq-reset aria-label="إرجاع المبنى لوضعه" data-i18n-aria="hq.reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+        </div>
       </div>
     </div>
   </section>
@@ -730,8 +737,8 @@
 </a>
 
 <script src="assets/js/config.js?v=20261111d"></script>
-<script src="assets/js/i18n.js?v=20261116m"></script>
+<script src="assets/js/i18n.js?v=20261116n"></script>
 <script src="assets/js/main.js?v=20261111d"></script>
-<script type="module" src="assets/js/hq-viewer.js?v=m3"></script>
+<script type="module" src="assets/js/hq-viewer.js?v=m5"></script>
 </body>
 </html>
