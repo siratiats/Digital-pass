@@ -1,6 +1,6 @@
 /* Digital Pass HQ — the outside world: campus (terrain, roads, trees, low buildings) and the headquarters
    building with its lobby. Front faces +z, origin at the tower footprint centre, ground y = 0. */
-import { THREE, rng, clamp, canvasTex, roundRect, SYMBOL_PATH, M, G, geo, makeKit, quadBatch, addPerson } from './core.js';
+import { THREE, rng, clamp, canvasTex, roundRect, SYMBOL_PATH, M, G, geo, makeKit, quadBatch, addPerson, setClip, getClip } from './core.js';
 
 export const C = { white: 0xf3f4f6, off: 0xe4e7eb, roof: 0xd9dde2, grey: 0xb9c0c8, fin: 0xc9d0d8, frame: 0x3d4652, dark: 0x2a3340, blue: 0x2d63fc, blueDeep: 0x1f46b0,
   metal: 0xd2d7de, navy: 0x0a1b3d, cyan: 0x1fc8f6, led: 0x8fecff, pot: 0xeceff2, trunk: 0x8f8a80, lawn: 0xcfe0c2, leaf: 0x34a58b };
@@ -95,7 +95,7 @@ function windowMaterial(W) {
     if (!E) { g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(px, py, pw, 2); }
   };
   const draw = (E) => (g) => { g.scale(k, k); g.fillStyle = E ? '#000' : '#3b4450'; g.fillRect(0, 0, 2048, 1536); for (const c of cells) cell(g, c, E); };
-  const map = canvasTex(W, W * 0.75, draw(false), { aniso: 8 }), emi = canvasTex(W, W * 0.75, draw(true), { aniso: 8 });
+  const map = canvasTex(W, W * 0.75, draw(false), { aniso: 8, scale: 1 }), emi = canvasTex(W, W * 0.75, draw(true), { aniso: 8, scale: 1 });
   return std({ map, color: 0xa3aab3, emissiveMap: emi, emissive: 0xffffff, emissiveIntensity: 1.45, roughness: 0.18, metalness: 0.4, envMapIntensity: 0.9 });
 }
 
@@ -302,9 +302,12 @@ function campus(K, F, D, group, R, keepClear) {
   for (const [x, z] of [[-17, 26], [11, 26], [-17, 40], [11, 40]]) { mb(K, 4.2, 0.9, 4.2, C.pot, x, 0.45, z); K.box(0.3, 2.4, 0.3, M.soft, x, 2, z, { color: C.trunk }); shrub(K, x, 4.3, z, 2.2, C.leaf, 1.25); }
   for (const x of [-11, 5]) mb(K, 3.6, 0.5, 0.9, C.white, x, 0.45, 33);
   // parking with cars, cars on the avenue
-  const lot = new THREE.Mesh(new THREE.PlaneGeometry(64, 32), ground(4, { map: parkingTex() }));
-  lot.rotation.x = -Math.PI / 2; lot.position.set(52, 0.04, 22); lot.receiveShadow = true; group.add(lot);
-  for (let i = 0; i < 16; i++) for (const row of [0, 1]) { if (R() < 0.3) continue; car(K, R, 24 + i * 4, 22 + (row ? 9 : -9), row ? Math.PI : 0); }
+  const clip = getClip(), lotIn = !clip || (52 > clip.x0 && 52 < clip.x1 && 22 > clip.z0 && 22 < clip.z1);   // a model plinth may leave the car park out
+  if (lotIn) {
+    const lot = new THREE.Mesh(new THREE.PlaneGeometry(64, 32), ground(4, { map: parkingTex() }));
+    lot.rotation.x = -Math.PI / 2; lot.position.set(52, 0.04, 22); lot.receiveShadow = true; group.add(lot);
+  }
+  for (let i = 0; i < 16; i++) for (const row of [0, 1]) { if (R() < 0.3 || !lotIn) continue; car(K, R, 24 + i * 4, 22 + (row ? 9 : -9), row ? Math.PI : 0); }
   for (let i = 0; i < 14; i++) { const far = R() < 0.5; car(K, R, -300 + R() * 600, 70 + (far ? -3.4 : 3.4), far ? Math.PI / 2 : -Math.PI / 2); }
   // lawns
   const lawns = [[-110, 22, 50, 40], [-110, -50, 50, 40], [55, -45, 50, 50], [-30, 58, 230, 10]];
@@ -497,10 +500,13 @@ function forecourt(K, group, T, R) {
 }
 
 /* built in a few steps, yielding to the page in between so scrolling never stalls while the HQ is put together */
-export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [] }) {
+/* plot: { x0, x1, z0, z1 } turns the campus into an architectural model on a plinth: no terrain, everything trimmed
+   to the rectangle, a white base with a navy band and the logo on its front edge. */
+export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null }) {
   const group = new THREE.Group(), R = rng(9), step = () => new Promise((r) => setTimeout(r, 0));
   const K = makeKit(), KL = makeKit({ cast: false, receive: false }), F = quadBatch(), D = quadBatch();
-  terrain(group); await step();
+  if (plot) { setClip(plot); plinth(group, brandGeo, plot); } else terrain(group);
+  await step();
   campus(K, F, D, group, R, keepClear); await step();
   const leaves = tower(K, KL, F, group, brandGeo, rng(5)); await step();
   wing(K, KL, F, group, rng(100));
@@ -509,5 +515,25 @@ export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [] })
   const win = new THREE.Mesh(F.build(), windowMaterial(windowSize)); win.receiveShadow = true; group.add(win);
   const rt = roadTex();
   const roads = new THREE.Mesh(D.build(), ground(2, { map: rt })); roads.receiveShadow = true; group.add(roads);
+  setClip(null);
   return { group, leaves };
+}
+
+function plinth(group, brandGeo, { x0, x1, z0, z1 }) {
+  const w = x1 - x0, d = z1 - z0, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, H = 7, lip = 1.2;
+  const mat = (c, r = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: 0 });
+  const top = new THREE.Mesh(new THREE.BoxGeometry(w + lip * 2, 0.6, d + lip * 2), mat(0xf4f6f8));
+  top.position.set(cx, -0.31, cz); top.receiveShadow = true; group.add(top);
+  const body = new THREE.Mesh(new THREE.BoxGeometry(w + lip * 2 - 0.4, H, d + lip * 2 - 0.4), mat(0xffffff, 0.7));
+  body.position.set(cx, -0.6 - H / 2, cz); body.receiveShadow = true; group.add(body);
+  const band = new THREE.Mesh(new THREE.BoxGeometry(w + lip * 2 - 0.2, 1.1, d + lip * 2 - 0.2), mat(C.navy, 0.5));
+  band.position.set(cx, -0.6 - H + 0.55, cz); group.add(band);
+  const glow = new THREE.Mesh(new THREE.BoxGeometry(w + lip * 2 - 0.1, 0.18, d + lip * 2 - 0.1), new THREE.MeshBasicMaterial({ color: C.cyan, toneMapped: false }));
+  glow.position.set(cx, -0.6 - H + 1.2, cz); group.add(glow);
+  // logo on the front face of the plinth (the side facing the entrance, +z)
+  if (brandGeo && brandGeo.logoDark) {
+    const g = brandGeo.logoDark, s = 1.9, lw = g.userData.width * s, lh = g.userData.height * s;
+    const logo = new THREE.Mesh(g, M.logo);
+    logo.scale.setScalar(s); logo.position.set(cx - lw / 2, -0.6 - (H - 1.1) / 2 - lh / 2, z1 + lip - 0.18); group.add(logo);
+  }
 }
