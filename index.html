@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=20261111d">
-  <link rel="stylesheet" href="assets/css/hq.css?v=m7">
+  <link rel="stylesheet" href="assets/css/hq.css?v=m8">
   <script>document.documentElement.classList.add('js');</script>
 
   <!-- Structured data for search engines. If the phone number changes, update it here too (and in assets/js/config.js). -->
@@ -270,9 +270,12 @@
     </div>
   </section>
 
-  <!-- ============ The Digital Pass model (3D, drag to rotate) ============ -->
-  <section class="section hq" id="hq" aria-label="مجسّم Digital Pass" data-i18n-aria="hq.label">
+  <section class="section about" id="about">
     <div class="container">
+      <p class="label reveal" data-i18n="about.label">من نحن</p>
+      <p class="statement reveal" data-i18n-html="about.statement">التقنية الجيدة لا تُرى… <span class="soft">تُحَسّ في سرعة العمل وسهولته.</span></p>
+
+      <!-- the Digital Pass model (3D, drag to rotate) -->
       <div class="hq-stage reveal" data-hq>
         <div class="hq-fade" aria-hidden="true"></div>
         <canvas class="hq-canvas" tabindex="0" role="img" aria-label="مجسّم ثلاثي الأبعاد لمبنى Digital Pass: اسحبه لتدويره، والأسهم للتدوير، و+ و− للتقريب والتبعيد" data-i18n-aria="hq.aria"></canvas>
@@ -285,13 +288,6 @@
           <button type="button" class="hq-btn" data-hq-reset aria-label="إرجاع المبنى لوضعه" data-i18n-aria="hq.reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section about" id="about">
-    <div class="container">
-      <p class="label reveal" data-i18n="about.label">من نحن</p>
-      <p class="statement reveal" data-i18n-html="about.statement">التقنية الجيدة لا تُرى… <span class="soft">تُحَسّ في سرعة العمل وسهولته.</span></p>
 
       <div class="about-cols">
         <p class="about-text reveal" data-i18n="about.text">Digital Pass شركة حلول رقمية تبني لعملائها أنظمة مخصّصة حسب احتياجهم، وتطوّر التطبيقات والمواقع وتديرها بعد إطلاقها. نتعامل مع التقنية كمفتاح يفتح لعملائنا باباً جديداً للنمو، لا عبئاً إضافياً عليهم.</p>
