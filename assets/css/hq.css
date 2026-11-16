@@ -1,14 +1,17 @@
 /* ==========================================================================
    Digital Pass — the 3D model section (between the hero and "about")
-   A picture of the model shows first (and stays if WebGL is missing or failed); the live model fades in over it.
+   No frame: the stage runs edge to edge, the canvas is transparent and the land fades into the page colour, so the
+   campus sits inside the page. A picture shows first (and stays if WebGL is missing or failed).
    ========================================================================== */
-.hq { position: relative; padding-bottom: clamp(56px, 7vw, 96px); background: linear-gradient(180deg, var(--white) 0%, #f3f6fb 100%); }
+.hq { position: relative; padding-bottom: clamp(24px, 3vw, 48px); background: var(--white); overflow: hidden; }
 .hq .section-top { margin-bottom: 0; }
 .hq-stage {
-  position: relative; margin-top: clamp(28px, 4vw, 52px); height: clamp(400px, 66vh, 740px);
-  border-radius: 32px; overflow: hidden; isolation: isolate;
-  background: radial-gradient(120% 95% at 50% 32%, #ffffff 0%, #eef3fa 58%, #e1e9f4 100%);
-  border: 1px solid rgba(10, 27, 61, .07); box-shadow: 0 40px 80px -50px rgba(10, 27, 61, .35);
+  position: relative; isolation: isolate; height: clamp(420px, 72vh, 820px);
+  width: 100vw; margin-inline: calc(50% - 50vw); margin-top: clamp(4px, 1vw, 16px);
+}
+.hq-fade { /* the land melts into the page above and below: no edge anywhere */
+  position: absolute; z-index: 2; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--white) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 76%, var(--white) 100%);
 }
 .hq-stage::before { /* the picture of the model: shown while loading, kept as the fallback */
   content: ""; position: absolute; inset: 0; z-index: 0;
@@ -21,9 +24,9 @@
 .hq-stage.is-ready .hq-canvas { opacity: 1; }
 .hq-stage.is-static .hq-canvas { display: none; }
 .hq-canvas:active { cursor: grabbing; }
-.hq-canvas:focus-visible { box-shadow: inset 0 0 0 3px var(--blue); border-radius: 32px; }
+.hq-canvas:focus-visible { box-shadow: inset 0 0 0 3px var(--blue); }
 .hq-hint {
-  position: absolute; z-index: 2; bottom: 20px; left: 50%; transform: translateX(-50%);
+  position: absolute; z-index: 3; bottom: 22px; left: 50%; transform: translateX(-50%);
   display: inline-flex; align-items: center; gap: 9px; padding: 9px 16px; border-radius: 99px;
   font-size: 13.5px; font-weight: 600; color: #fff; background: rgba(10, 27, 61, .82); white-space: nowrap;
   pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
@@ -35,13 +38,12 @@
 .hq-hint path { animation: hq-nudge 2.2s ease-in-out infinite; transform-origin: 50% 50%; }
 @keyframes hq-nudge { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
 .hq-stage.is-loading::after { /* small loading ring while the model is put together */
-  content: ""; position: absolute; z-index: 2; top: 18px; inset-inline-end: 18px; width: 18px; height: 18px; border-radius: 50%;
+  content: ""; position: absolute; z-index: 3; top: 18px; inset-inline-end: max(18px, calc(50vw - 600px)); width: 18px; height: 18px; border-radius: 50%;
   border: 2px solid rgba(10, 27, 61, .18); border-top-color: var(--blue); animation: hq-spin .8s linear infinite;
 }
 @keyframes hq-spin { to { transform: rotate(360deg); } }
 @media (max-width: 899px) {
-  .hq-stage { height: clamp(360px, 60vh, 560px); border-radius: 24px; margin-inline: calc(var(--gutter) * -0.4); }
-  .hq-canvas:focus-visible { border-radius: 24px; }
+  .hq-stage { height: clamp(380px, 64vh, 600px); }
   .hq-hint { bottom: 14px; font-size: 12.5px; padding: 8px 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .hq-hint path, .hq-stage.is-loading::after { animation: none; } }
