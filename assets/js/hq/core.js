@@ -284,12 +284,14 @@ export const M = {
 
 /* ---------- batching: thousands of parts in a handful of draw calls (one InstancedMesh per geometry + material) ---------- */
 const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _c = new THREE.Color();
-/* clip rectangle (a model on a plinth): instances whose origin falls outside are dropped, large axis-aligned ground
-   boxes and planes are trimmed to it, and quads are trimmed or dropped. null = no clipping. */
+/* clip: a rectangle { x0, x1, z0, z1 } (a model on a plinth: instances outside are dropped, large axis-aligned ground
+   boxes, planes and quads are trimmed) or a reach { r } around the origin (instances farther out are dropped: they
+   would be lost in the mist anyway). null = no clipping. */
 let CLIP = null;
 export const setClip = (c) => { CLIP = c; };
 export const getClip = () => CLIP;
-const inClip = (x, z, m = 0) => !CLIP || (x >= CLIP.x0 - m && x <= CLIP.x1 + m && z >= CLIP.z0 - m && z <= CLIP.z1 + m);
+const inClip = (x, z, m = 0) => !CLIP || (CLIP.r ? Math.hypot(x, z) <= CLIP.r + m : (x >= CLIP.x0 - m && x <= CLIP.x1 + m && z >= CLIP.z0 - m && z <= CLIP.z1 + m));
+const rectClip = () => CLIP && CLIP.x0 !== undefined;
 
 export function makeKit({ cast = true, receive = true } = {}) {
   const batches = new Map();
@@ -313,7 +315,7 @@ export function makeKit({ cast = true, receive = true } = {}) {
       b.cols.push(o.color ?? 0xffffff); if (o.color !== undefined) b.tint = true;
     },
     box(w, h, d, mat, x, y, z, o = {}) {
-      if (CLIP && stack.length === 1 && !o.rx && !o.ry && !o.rz && (w > 12 || d > 12)) {   // big ground slabs: trim to the plinth
+      if (rectClip() && stack.length === 1 && !o.rx && !o.ry && !o.rz && (w > 12 || d > 12)) {   // big ground slabs: trim to the plinth
         const x0 = Math.max(x - w / 2, CLIP.x0), x1 = Math.min(x + w / 2, CLIP.x1), z0 = Math.max(z - d / 2, CLIP.z0), z1 = Math.min(z + d / 2, CLIP.z1);
         if (x1 <= x0 || z1 <= z0) return;
         w = x1 - x0; d = z1 - z0; x = (x0 + x1) / 2; z = (z0 + z1) / 2;
@@ -323,7 +325,7 @@ export function makeKit({ cast = true, receive = true } = {}) {
     },
     cyl(r, h, mat, x, y, z, o = {}) { kit.add(o.low ? G.cyl8() : G.cyl(), mat, x, y, z, { ...o, sx: r, sy: h, sz: o.r2 ?? r }); },
     plane(w, h, mat, x, y, z, o = {}) {   // faces +z; rx -PI/2 = facing up
-      if (CLIP && stack.length === 1 && o.rx === -Math.PI / 2 && !o.ry && (w > 12 || h > 12)) {
+      if (rectClip() && stack.length === 1 && o.rx === -Math.PI / 2 && !o.ry && (w > 12 || h > 12)) {
         const x0 = Math.max(x - w / 2, CLIP.x0), x1 = Math.min(x + w / 2, CLIP.x1), z0 = Math.max(z - h / 2, CLIP.z0), z1 = Math.min(z + h / 2, CLIP.z1);
         if (x1 <= x0 || z1 <= z0) return;
         w = x1 - x0; h = z1 - z0; x = (x0 + x1) / 2; z = (z0 + z1) / 2;
@@ -366,7 +368,7 @@ export function quadBatch() {
     },
     /* horizontal rectangle facing up; alongZ: the texture's u axis runs along z */
     flat(x0, z0, x1, z1, y, u0, v0, u1, v1, alongZ = false) {
-      if (CLIP) {   // trim to the plinth, keeping the texture where it was
+      if (rectClip()) {   // trim to the plinth, keeping the texture where it was
         const cx0 = Math.max(x0, CLIP.x0), cx1 = Math.min(x1, CLIP.x1), cz0 = Math.max(z0, CLIP.z0), cz1 = Math.min(z1, CLIP.z1);
         if (cx1 <= cx0 || cz1 <= cz0) return;
         const fx = (v) => (v - x0) / (x1 - x0), fz = (v) => (v - z0) / (z1 - z0);

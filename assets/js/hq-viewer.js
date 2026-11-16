@@ -109,7 +109,7 @@ function init() {
     try {
       size();
       dpr = +params.get('dpr') || Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75);
-      const { createModel } = await import('./hq/model.js?v=m1');
+      const { createModel } = await import('./hq/model.js?v=m3');
       model = await createModel({ canvas, mobile, width: w, height: h, dpr, lang: lang(), onStep: (x) => dbg('model ' + x) });
       canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); dbg('CONTEXT LOST'); fail(); });
       model.render(s.az, s.pol);

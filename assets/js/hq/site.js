@@ -169,8 +169,8 @@ function terrainHeight(x, z) {
   const mtn = r > 1300 ? sstep(r, 1300, 3000) * (260 + 900 * Math.pow(fbm(x * 0.0007 + 21, z * 0.0007 + 9, 6), 1.6)) * (0.55 + 0.45 * side) : 0;
   return hills + mtn;
 }
-function terrain(group) {
-  const g = new THREE.PlaneGeometry(9000, 9000, 220, 220);
+function terrain(group, reach = 0) {
+  const size = reach ? reach * 2 + 600 : 9000, g = new THREE.PlaneGeometry(size, size, reach ? Math.round(size / 41) : 220, reach ? Math.round(size / 41) : 220);
   g.rotateX(-Math.PI / 2);
   const pos = g.attributes.position, col = new Float32Array(pos.count * 3);
   const cFlat = new THREE.Color('#e7eaed'), cHill = new THREE.Color('#c9d2bf'), cGreen = new THREE.Color('#b4c6a0'), cRock = new THREE.Color('#c9cdd2'), c = new THREE.Color();
@@ -502,10 +502,11 @@ function forecourt(K, group, T, R) {
 /* built in a few steps, yielding to the page in between so scrolling never stalls while the HQ is put together */
 /* plot: { x0, x1, z0, z1 } turns the campus into an architectural model on a plinth: no terrain, everything trimmed
    to the rectangle, a white base with a navy band and the logo on its front edge. */
-export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null }) {
+export async function buildSite({ brandGeo, windowSize = 2048, keepClear = [], plot = null, reach = 0 }) {
   const group = new THREE.Group(), R = rng(9), step = () => new Promise((r) => setTimeout(r, 0));
   const K = makeKit(), KL = makeKit({ cast: false, receive: false }), F = quadBatch(), D = quadBatch();
-  if (plot) { setClip(plot); plinth(group, brandGeo, plot); } else terrain(group);
+  if (plot) { setClip(plot); plinth(group, brandGeo, plot); }
+  else { if (reach) setClip({ r: reach }); terrain(group, reach); }   // reach: nothing beyond it is built (it would be lost in the mist)
   await step();
   campus(K, F, D, group, R, keepClear); await step();
   const leaves = tower(K, KL, F, group, brandGeo, rng(5)); await step();
